@@ -1,4 +1,5 @@
 requests
 python-dotenv
 pandas
-ipykernel 
+ipykernel
+PyYAML 
