@@ -1,0 +1,16 @@
+# Configuration for the Layered Memory Trader
+
+# Polling intervals in seconds
+polling_intervals:
+  price_data: 60
+  sentiment_data: 3600
+
+# Trading thresholds
+thresholds:
+  mean_confidence_to_act: 0.7
+
+# Memory sizes (number of data points)
+memory_sizes:
+  short_term: 120  # 2 hours of data at 1-minute intervals
+  mid_term: 2880 # 2 days of data at 1-minute intervals
+  long_term: 20160 # 2 weeks of data at 1-minute intervals 
