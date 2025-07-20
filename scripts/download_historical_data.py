@@ -3,6 +3,19 @@ import pandas as pd
 import time
 from datetime import datetime, timedelta
 
+def parse_time_frame_to_timedelta(time_frame: str) -> timedelta:
+    """Converts a time frame string like '1m', '1h', '1d' to a timedelta object."""
+    unit = time_frame[-1]
+    value = int(time_frame[:-1])
+    if unit == 'm':
+        return timedelta(minutes=value)
+    elif unit == 'h':
+        return timedelta(hours=value)
+    elif unit == 'd':
+        return timedelta(days=value)
+    else:
+        raise ValueError(f"Invalid time frame: {time_frame}")
+
 def download_historical_data(symbol='btcusd', time_frame='1m', days=30, output_file='historical_data.csv'):
     """
     Downloads historical data from the Gemini API and saves it to a CSV file.
@@ -15,10 +28,12 @@ def download_historical_data(symbol='btcusd', time_frame='1m', days=30, output_f
     url = f"https://api.gemini.com/v2/candles/{symbol}/{time_frame}"
     
     start_date = datetime.now() - timedelta(days=days)
+    end_date = datetime.now()
     all_candles = []
+    time_delta = parse_time_frame_to_timedelta(time_frame)
 
     # Gemini API has a limit of 1000 candles per request
-    while start_date < datetime.now():
+    while start_date < end_date:
         print(f"Fetching data from: {start_date}")
         
         # Convert start_date to milliseconds
@@ -39,9 +54,9 @@ def download_historical_data(symbol='btcusd', time_frame='1m', days=30, output_f
             
             all_candles.extend(candles)
             
-            # The last candle's timestamp is the new start date
+            # The next start date is the last candle's time + one time frame interval
             last_timestamp_ms = candles[-1][0]
-            start_date = datetime.fromtimestamp(last_timestamp_ms / 1000)
+            start_date = datetime.fromtimestamp(last_timestamp_ms / 1000) + time_delta
             
             # To avoid hitting rate limits
             time.sleep(1)
