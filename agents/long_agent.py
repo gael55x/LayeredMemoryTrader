@@ -29,8 +29,8 @@ class LongTermAgent(BaseAgent):
         prompt = f"You are a long-term trading analyst specializing in {ticker}. Based on the following data, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
         
         # Add long-term price trend
-        prompt += f"Long-Term Price & RSI Data for {ticker} (last 10 data points):\n"
-        prompt += long_term_data[['close', 'rsi']].tail(10).to_string() + "\n\n"
+        prompt += f"Long-Term Price & Indicator Data for {ticker} (last 10 data points):\n"
+        prompt += long_term_data[['close', 'rsi', 'macd', 'upper_band', 'lower_band']].tail(10).to_string() + "\n\n"
 
         # Add semantic memory context
         try:

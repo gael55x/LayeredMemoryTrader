@@ -16,6 +16,20 @@ def calculate_rsi(data, window=14):
     rsi = 100 - (100 / (1 + rs))
     return rsi
 
+def calculate_macd(data, short_window=12, long_window=26, signal_window=9):
+    short_ema = data['close'].ewm(span=short_window, adjust=False).mean()
+    long_ema = data['close'].ewm(span=long_window, adjust=False).mean()
+    macd = short_ema - long_ema
+    signal = macd.ewm(span=signal_window, adjust=False).mean()
+    return macd, signal
+
+def calculate_bollinger_bands(data, window=20, num_std_dev=2):
+    rolling_mean = data['close'].rolling(window=window).mean()
+    rolling_std = data['close'].rolling(window=window).std()
+    upper_band = rolling_mean + (rolling_std * num_std_dev)
+    lower_band = rolling_mean - (rolling_std * num_std_dev)
+    return upper_band, lower_band
+
 class Trader:
     def __init__(self, config_path='config.yaml', backtest_mode='train'):
         with open(config_path, 'r') as f:
@@ -42,7 +56,11 @@ class Trader:
             print(f"\n--- Running backtest for {ticker} ---")
             self.portfolios[ticker] = {'cash': 10000, 'shares': 0, 'value_history': []}
             ticker_data = self.data_manager.get_data_for_ticker(ticker)
+            
+            # --- Add Technical Indicators ---
             ticker_data['rsi'] = calculate_rsi(ticker_data)
+            ticker_data['macd'], ticker_data['macd_signal'] = calculate_macd(ticker_data)
+            ticker_data['upper_band'], ticker_data['lower_band'] = calculate_bollinger_bands(ticker_data)
             
             if ticker_data.empty:
                 print(f"No data for {ticker}, skipping.")
