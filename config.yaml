@@ -7,10 +7,10 @@ polling_intervals:
 
 # Trading thresholds
 thresholds:
-  mean_confidence_to_act: 0.7
+  mean_confidence_to_act: 0.6
 
-# Memory sizes (number of data points)
-memory_sizes:
+# Memory horizons (number of data points)
+memory_horizons:
   short_term: 120  # 2 hours of data at 1-minute intervals
   mid_term: 2880 # 2 days of data at 1-minute intervals
   long_term: 20160 # 2 weeks of data at 1-minute intervals 

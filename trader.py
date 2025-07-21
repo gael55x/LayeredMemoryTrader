@@ -56,17 +56,28 @@ class Trader:
 
                 final_decision, final_confidence, votes = self.debate.run(memory_snapshot)
 
-                # Simulate Portfolio Transaction 
-                if final_decision == 'BUY' and self.portfolios[ticker]['cash'] > current_price:
-                    shares_to_buy = self.portfolios[ticker]['cash'] / current_price
-                    self.portfolios[ticker]['shares'] += shares_to_buy
-                    self.portfolios[ticker]['cash'] = 0
-                    outcome = 'profit' # Simplified for reflection
-                elif final_decision == 'SELL' and self.portfolios[ticker]['shares'] > 0:
-                    self.portfolios[ticker]['cash'] += self.portfolios[ticker]['shares'] * current_price
-                    self.portfolios[ticker]['shares'] = 0
-                    outcome = 'profit' # Simplified for reflection
-                else: # HOLD
+                # What this does:
+                # If the confidence is high enough, it will make a decision to buy or sell.
+                # If the confidence is not high enough, it will hold.
+                # If the confidence is high enough, it will make a decision to buy or sell. 
+                if final_confidence > self.config['thresholds']['mean_confidence_to_act']:
+                    if final_decision == 'BUY' and self.portfolios[ticker]['cash'] > current_price:
+                        # Proportional bet sizing
+                        investment_amount = self.portfolios[ticker]['cash'] * final_confidence
+                        shares_to_buy = investment_amount / current_price
+                        self.portfolios[ticker]['shares'] += shares_to_buy
+                        self.portfolios[ticker]['cash'] -= investment_amount
+                        outcome = 'profit' # Simplified
+                    elif final_decision == 'SELL' and self.portfolios[ticker]['shares'] > 0:
+                        # Proportional selling
+                        shares_to_sell = self.portfolios[ticker]['shares'] * final_confidence
+                        self.portfolios[ticker]['cash'] += shares_to_sell * current_price
+                        self.portfolios[ticker]['shares'] -= shares_to_sell
+                        outcome = 'profit' # Simplified
+                    else: # HOLD
+                        outcome = 'neutral'
+                else:
+                    final_decision = 'HOLD' # Override decision if confidence is too low
                     outcome = 'neutral'
                 
                 # Update portfolio value history

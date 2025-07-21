@@ -2,6 +2,7 @@ import pandas as pd
 from trader import Trader
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
 def evaluate_performance(trader: Trader):
     """
@@ -42,14 +43,20 @@ def evaluate_performance(trader: Trader):
     plt.close()
     print(f"Win/loss chart saved to {win_loss_plot_path}")
 
-    # Plot Portfolio Performance 
+    # Plot Portfolio Performance vs. Buy and Hold 
     plt.figure(figsize=(14, 8))
     for ticker, portfolio in trader.portfolios.items():
         if portfolio['value_history']:
+            # Agent's performance
             df = pd.DataFrame(portfolio['value_history'], columns=['time', 'value']).set_index('time')
-            plt.plot(df.index, df['value'], label=f'{ticker} Portfolio Value')
+            plt.plot(df.index, df['value'], label=f'{ticker} Agent Portfolio')
+            
+            # Buy and Hold benchmark
+            ticker_data = trader.data_manager.get_data_for_ticker(ticker)
+            buy_and_hold_value = (10000 / ticker_data['close'].iloc[0]) * ticker_data['close']
+            plt.plot(ticker_data.index, buy_and_hold_value, label=f'{ticker} Buy & Hold', linestyle='--')
     
-    plt.title('Portfolio Value Over Time')
+    plt.title('Portfolio Value Over Time vs. Buy and Hold')
     plt.xlabel('Time')
     plt.ylabel('Portfolio Value ($)')
     plt.legend()
@@ -58,6 +65,36 @@ def evaluate_performance(trader: Trader):
     plt.savefig(portfolio_plot_path)
     plt.close()
     print(f"Portfolio performance graph saved to {portfolio_plot_path}")
+
+    # Advanced Metrics & Summary Report 
+    report_content = "# Trading Strategy Performance Report\n\n"
+    for ticker, portfolio in trader.portfolios.items():
+        if portfolio['value_history']:
+            df = pd.DataFrame(portfolio['value_history'], columns=['time', 'value']).set_index('time')['value']
+            
+            # Sharpe Ratio
+            daily_returns = df.pct_change().dropna()
+            sharpe_ratio = np.sqrt(252) * daily_returns.mean() / daily_returns.std() if daily_returns.std() != 0 else 0
+            
+            # Max Drawdown
+            cumulative_max = df.cummax()
+            drawdown = (df - cumulative_max) / cumulative_max
+            max_drawdown = drawdown.min()
+
+            report_content += f"## {ticker} Performance\n"
+            report_content += f"- **Final Portfolio Value:** ${df.iloc[-1]:,.2f}\n"
+            report_content += f"- **Sharpe Ratio:** {sharpe_ratio:.2f}\n"
+            report_content += f"- **Max Drawdown:** {max_drawdown:.2%}\n\n"
+            
+            print(f"\n--- {ticker} Advanced Metrics ---")
+            print(f"Sharpe Ratio: {sharpe_ratio:.2f}")
+            print(f"Max Drawdown: {max_drawdown:.2%}")
+
+    summary_path = os.path.join(results_dir, 'summary_report.md')
+    with open(summary_path, 'w') as f:
+        f.write(report_content)
+    print(f"\nSummary report saved to {summary_path}")
+
 
 if __name__ == '__main__':
     # Run a backtest first
