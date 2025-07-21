@@ -27,36 +27,44 @@ class Trader:
 
     def run_backtest(self):
         print("Starting backtest...")
-        while self.data_manager.fetch_data():
-            current_data = self.data_manager.price_data
-            if not current_data.empty:
-                self.memory_manager.update_memory(current_data)
+        tickers = self.data_manager.tickers
+
+        for ticker in tickers:
+            print(f"\n--- Running backtest for {ticker} ---")
+            ticker_data = self.data_manager.get_data_for_ticker(ticker)
+            
+            if ticker_data.empty:
+                print(f"No data for {ticker}, skipping.")
+                continue
+
+            # Iterate through the data for the current ticker
+            for i in range(1, len(ticker_data)):
+                current_data_slice = ticker_data.iloc[:i]
+                self.memory_manager.update_memory(current_data_slice)
                 memory_snapshot = self.memory_manager.get_memory_snapshot()
 
                 # Simulate adding a memory event
-                if 'news' in current_data.columns and not pd.isna(current_data['news'].iloc[-1]):
-                    self.semantic_memory.add_memory(current_data['news'].iloc[-1])
+                if 'news' in current_data_slice.columns and not pd.isna(current_data_slice['news'].iloc[-1]):
+                    self.semantic_memory.add_memory(current_data_slice['news'].iloc[-1])
 
                 final_decision, final_confidence, votes = self.debate.run(memory_snapshot)
 
                 # Simulate trade outcome and reflection
-                # In a real scenario, this would be determined by the market
                 simulated_outcome = "profit" if final_decision == "BUY" else "loss" 
-                reflection_text = f"The decision to {final_decision} resulted in a {simulated_outcome}. Confidence was {final_confidence:.2f}."
+                reflection_text = f"[{ticker}] The decision to {final_decision} resulted in a {simulated_outcome}. Confidence was {final_confidence:.2f}."
                 
                 self.memory_manager.add_reflection(
-                    timestamp=current_data.index[-1],
+                    timestamp=current_data_slice.index[-1],
                     decision=final_decision,
                     confidence=final_confidence,
                     outcome=simulated_outcome,
                     reflection=reflection_text
                 )
 
-                print(f"Timestamp: {current_data.index[-1]}")
-                print(f"Votes: {votes}")
-                print(f"Final Decision: {final_decision}, Confidence: {final_confidence}\n")
+                if i % 100 == 0: # Print progress every 100 days
+                    print(f"  Processed {i} days for {ticker}. Last decision: {final_decision}")
 
-        print("Backtest finished.")
+        print("\nBacktest finished.")
 
 if __name__ == '__main__':
     # To run with training data
