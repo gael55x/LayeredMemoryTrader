@@ -1,6 +1,6 @@
-requests
-python-dotenv
+faiss-cpu
+numpy
 pandas
-ipykernel
 PyYAML
-ccxt 
+requests
+scikit-learn 

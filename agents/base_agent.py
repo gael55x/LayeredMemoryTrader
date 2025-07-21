@@ -1,19 +1,22 @@
 from abc import ABC, abstractmethod
 import pandas as pd
+from memory.semantic_memory import SemanticMemory
 
 class BaseAgent(ABC):
     """
     Abstract base class for all trading agents.
     """
-    def __init__(self, name: str, config: dict):
+    def __init__(self, name: str, config: dict, semantic_memory: SemanticMemory):
         """
         Initializes the agent.
         
         :param name: The name of the agent (e.g., "Short-Term Agent").
         :param config: A configuration dictionary.
+        :param semantic_memory: An instance of SemanticMemory for searching textual data.
         """
         self.name = name
         self.config = config
+        self.semantic_memory = semantic_memory
 
     @abstractmethod
     def vote(self, memory_snapshot: dict) -> tuple[str, float]:
@@ -44,7 +47,8 @@ if __name__ == '__main__':
 
     # Example instantiation of a subclass
     dummy_config = {'some_param': 'value'}
-    agent = DummyAgent(name="Dummy Agent", config=dummy_config)
+    semantic_memory = SemanticMemory() # Dummy instance for demonstration
+    agent = DummyAgent(name="Dummy Agent", config=dummy_config, semantic_memory=semantic_memory)
     
     # Create a dummy memory snapshot
     dummy_memory = {

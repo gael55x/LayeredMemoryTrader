@@ -1,22 +1,12 @@
 import pandas as pd
 
 class MemoryManager:
-    def __init__(self, config):
-        """
-        Initializes the MemoryManager with memory size configurations.
-        
-        :param config: A dictionary containing the configuration, 
-                       including memory_sizes for short, mid, and long term.
-        """
-        self.config = config
-        self.short_term_size = self.config['memory_sizes']['short_term']
-        self.mid_term_size = self.config['memory_sizes']['mid_term']
-        self.long_term_size = self.config['memory_sizes']['long_term']
-        
-        # DataFrames to hold the memory buffers
+    def __init__(self, horizons: dict):
+        self.horizons = horizons
         self.short_term_memory = pd.DataFrame()
         self.mid_term_memory = pd.DataFrame()
         self.long_term_memory = pd.DataFrame()
+        self.reflection_memory = pd.DataFrame(columns=['timestamp', 'decision', 'confidence', 'outcome', 'reflection'])
 
     def update_memory(self, new_data: pd.DataFrame):
         """
@@ -29,20 +19,28 @@ class MemoryManager:
             
         # Update short-term memory
         self.short_term_memory = pd.concat([self.short_term_memory, new_data])
-        if len(self.short_term_memory) > self.short_term_size:
-            self.short_term_memory = self.short_term_memory.iloc[-self.short_term_size:]
+        if len(self.short_term_memory) > self.horizons['short_term']:
+            self.short_term_memory = self.short_term_memory.iloc[-self.horizons['short_term']:]
             
         # Update mid-term memory
         self.mid_term_memory = pd.concat([self.mid_term_memory, new_data])
-        if len(self.mid_term_memory) > self.mid_term_size:
-            self.mid_term_memory = self.mid_term_memory.iloc[-self.mid_term_size:]
+        if len(self.mid_term_memory) > self.horizons['mid_term']:
+            self.mid_term_memory = self.mid_term_memory.iloc[-self.horizons['mid_term']:]
             
         # Update long-term memory
-        self.long_term_memory = pd.concat([self.long_term_memory, new_data])
-        if len(self.long_term_memory) > self.long_term_size:
-            self.long_term_memory = self.long_term_memory.iloc[-self.long_term_size:]
+        self.long_term_memory = pd.concat([self.long_term_memory, new_data]).tail(self.horizons['long_term'])
 
-    def get_memory_snapshot(self):
+    def add_reflection(self, timestamp, decision, confidence, outcome, reflection_text):
+        new_reflection = pd.DataFrame({
+            'timestamp': [timestamp],
+            'decision': [decision],
+            'confidence': [confidence],
+            'outcome': [outcome],
+            'reflection': [reflection_text]
+        })
+        self.reflection_memory = pd.concat([self.reflection_memory, new_reflection], ignore_index=True)
+
+    def get_memory_snapshot(self) -> dict:
         """
         Returns a dictionary containing the current state of all memory layers.
         """
@@ -50,6 +48,7 @@ class MemoryManager:
             'short_term': self.short_term_memory,
             'mid_term': self.mid_term_memory,
             'long_term': self.long_term_memory,
+            'reflections': self.reflection_memory
         }
 
 if __name__ == '__main__':
@@ -60,7 +59,7 @@ if __name__ == '__main__':
         config = yaml.safe_load(f)
 
     # Example usage:
-    memory_manager = MemoryManager(config)
+    memory_manager = MemoryManager(config['memory_sizes'])
     
     # Simulate adding data
     for i in range(200):

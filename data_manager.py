@@ -5,32 +5,44 @@ import time
 import yaml
 
 class DataManager:
-    def __init__(self, config, backtest_file=None):
+    def __init__(self, config, backtest_mode=None):
         self.config = config
         self.price_data = pd.DataFrame()
         self.sentiment_data = pd.DataFrame()
-        self.backtest_file = backtest_file
+        self.backtest_mode = backtest_mode
         
-        if self.backtest_file:
+        if self.backtest_mode:
             self._load_backtest_data()
 
     def _load_backtest_data(self):
         """Loads and prepares historical data for backtesting."""
-        print(f"Loading historical data from {self.backtest_file}...")
+        data_path = self.config['backtest']['full_data_path']
+        print(f"Loading historical data from {data_path}...")
         self.historical_data = pd.read_csv(
-            self.backtest_file, 
+            data_path, 
             index_col='time', 
             parse_dates=True
         )
+
+        if self.backtest_mode == 'train':
+            start_date = self.config['backtest']['training_period']['start']
+            end_date = self.config['backtest']['training_period']['end']
+        elif self.backtest_mode == 'test':
+            start_date = self.config['backtest']['testing_period']['start']
+            end_date = self.config['backtest']['testing_period']['end']
+        else:
+            raise ValueError("Invalid backtest mode specified. Choose 'train' or 'test'.")
+
+        self.historical_data = self.historical_data[start_date:end_date]
         self.backtest_iterator = self.historical_data.iterrows()
-        print("Historical data loaded.")
+        print(f"Historical data for {self.backtest_mode}ing loaded ({start_date} to {end_date}).")
 
     def fetch_data(self):
         """
         Fetches data. In backtesting mode, it yields the next historical data point.
         In live mode, it fetches from the APIs.
         """
-        if self.backtest_file:
+        if self.backtest_mode:
             try:
                 # Get the next row from the historical data
                 timestamp, row = next(self.backtest_iterator)
@@ -55,7 +67,7 @@ class DataManager:
         """
         Starts the live data fetching loop.
         """
-        if self.backtest_file:
+        if self.backtest_mode:
             print("Cannot start live fetching in backtest mode.")
             return
 
@@ -72,7 +84,7 @@ if __name__ == '__main__':
         config = yaml.safe_load(f)
 
     # Example of running in backtest mode
-    data_manager = DataManager(config, backtest_file='historical_data.csv')
+    data_manager = DataManager(config, backtest_mode='train')
     
     # Simulate fetching a few data points
     for _ in range(5):
