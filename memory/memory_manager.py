@@ -30,13 +30,13 @@ class MemoryManager:
         # Update long-term memory
         self.long_term_memory = pd.concat([self.long_term_memory, new_data]).tail(self.horizons['long_term'])
 
-    def add_reflection(self, timestamp, decision, confidence, outcome, reflection_text):
+    def add_reflection(self, timestamp, decision, confidence, outcome, reflection):
         new_reflection = pd.DataFrame({
             'timestamp': [timestamp],
             'decision': [decision],
             'confidence': [confidence],
             'outcome': [outcome],
-            'reflection': [reflection_text]
+            'reflection': [reflection]
         })
         self.reflection_memory = pd.concat([self.reflection_memory, new_reflection], ignore_index=True)
 

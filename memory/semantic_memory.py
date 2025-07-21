@@ -3,7 +3,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 
 class SemanticMemory:
-    def __init__(self, dimension=768):
+    def __init__(self, dimension=384):
         self.dimension = dimension
         self.index = faiss.IndexFlatL2(dimension)
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
