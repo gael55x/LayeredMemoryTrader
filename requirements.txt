@@ -3,4 +3,5 @@ numpy
 pandas
 PyYAML
 requests
-scikit-learn 
+scikit-learn
+yfinance 
