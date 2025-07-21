@@ -1,50 +1,63 @@
 # Layered Memory Trader
 
-This repository implements a hierarchical memory multi-agent system inspired by "TradingGPT" ([arXiv:2309.03736](https://arxiv.org/abs/2309.03736)), but built for real-world crypto execution using a Gemini API key. The system is designed to be practical, explainable, and uses layered memory to have agents vote on trades. It does not require complex machine learning models or paid data subscriptions.
+This project implements a multi-agent trading bot that uses a layered memory system to make trading decisions. The agents, each with a unique personality and risk profile, debate their decisions to reach a consensus. The system is designed for backtesting on historical data.
 
-## Workflow Overview
+## Features
 
-1.  **Data Ingestion**
-    -   Fetch BTC/USD price data from the Gemini public API.
-    -   Pull sentiment data from free sources (e.g., Crypto Fear & Greed Index).
+- **Multi-Agent System:** Utilizes a team of agents with different time-horizon specializations (short, mid, long-term).
+- **Layered Memory:** Maintains short, mid, and long-term memory buffers for a comprehensive market view.
+- **Semantic Memory:** Employs a FAISS-based semantic memory for searching qualitative data like news and reflections.
+- **Debate Mechanism:** Agents debate their findings to arrive at a collective trading decision.
+- **Reflection:** Agents reflect on their decisions, and these reflections are stored for later analysis.
+- **Backtesting Framework:** Built to test strategies on historical data, with a clear separation of training and testing periods.
+- **Performance Evaluation:** Includes a script to evaluate the bot's performance based on quantitative and qualitative metrics.
 
-2.  **Memory Layers**
-    -   **Short-term (1–2 hours):** Captures recent micro-trends.
-    -   **Mid-term (1–2 days):** Tracks momentum and sentiment drift.
-    -   **Long-term (weeks):** Identifies the macro market direction.
+## How It Works
 
-3.  **Agent Prompts**
-    -   Each agent receives its corresponding memory chunk and a prompt to vote `BUY`, `HOLD`, or `SELL` with a confidence score.
+1.  **Data Ingestion:** The `DataManager` loads historical price data for a specified ticker.
+2.  **Memory Update:** The `MemoryManager` updates the short, mid, and long-term memory buffers with the latest data.
+3.  **Agent Analysis:** Each agent analyzes the memory snapshot and, in the case of the `LongTermAgent`, queries the `SemanticMemory` for relevant context.
+4.  **Voting & Debate:** The agents cast their votes (`BUY`, `SELL`, `HOLD`) with a confidence score. The `Debate` class resolves these votes into a final decision.
+5.  **Reflection:** The outcome of the decision is simulated, and a reflection is generated and stored.
+6.  **Evaluation:** The `evaluate.py` script analyzes the stored reflections to gauge the performance of the trading strategy.
 
-4.  **Debate Coordinator**
-    -   A weighted vote is conducted across all agent outputs.
-    -   Action is taken if a configurable threshold is met (e.g., mean confidence ≥ 70%).
+## Getting Started
 
-5.  **Execution**
-    -   Places Dollar-Cost Averaging (DCA) buy or sell orders using the Gemini API.
+### Prerequisites
 
-6.  **Logging & Analysis**
-    -   Records the memory context, agent votes, and the outcome of each trade.
-    -   Evaluates the system's calibration by comparing agent confidence to profit and loss.
+- Python 3.8+
+- The required packages listed in `requirements.txt`
 
-## Code Structure
+### Installation
 
--   **/data/:** Handles ingestion of price and sentiment data.
--   **/memory/:** Manages LLM memory buffers and decay logic.
--   **/agents/:**
-    -   `short_agent.py`
-    -   `mid_agent.py`
-    -   `long_agent.py`
-    -   `debate.py`: Aggregates votes and makes the final decision.
--   `trader.py`: Places trades via the Gemini API.
--   `evaluate.py`: For backtesting and analyzing agent calibration/PnL.
--   `config.yaml`: Stores settings for polling intervals, thresholds, and memory sizes.
--   **Sample Jupyter Notebook:** Demonstrates a 7-day simulated backtest and live logging in sandbox mode.
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/LayeredMemoryTrader.git
+    cd LayeredMemoryTrader
+    ```
+2.  Install the dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-## Unique Features
+### Usage
 
--   **Layered-Memory Multi-Agent System:** A proven concept from "TradingGPT," applied to live crypto trading.
--   **Explainable AI for Traders:** Provides clear insight into why each agent voted a certain way, capturing trader perspectives across different time scales.
--   **Accessible:** Requires only a Gemini API key and uses free, public data sources. No ML training or data subscriptions are needed.
--   **Debate & Confidence Weighting:** Reveals the cognitive process behind trade decisions, as opposed to single-shot LLM commands.
--   **Educational:** A practical example of LLM memory management, prompt engineering, agent orchestration, and trading execution.
+1.  **Download Historical Data:**
+    Run the following command to download historical data for a stock (e.g., AAPL). This will create/update the `historical_data.csv` file.
+    ```bash
+    python scripts/download_historical_data.py
+    ```
+
+2.  **Run a Backtest:**
+    To run a backtest on the training or testing data, you can run the `trader.py` script. By default, it runs on the training data.
+    ```bash
+    python trader.py
+    ```
+    You can also modify `trader.py` to run on the test data.
+
+3.  **Evaluate Performance:**
+    To evaluate the performance of a backtest run, execute the `evaluate.py` script:
+    ```bash
+    python evaluate.py
+    ```
+    This will run a backtest on the test data and then print a performance summary.
