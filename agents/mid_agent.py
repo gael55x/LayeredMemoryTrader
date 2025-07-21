@@ -25,10 +25,9 @@ class MidTermAgent(BaseAgent):
             
         ticker = mid_term_data['ticker'].iloc[-1]
 
-        # Prepare the Prompt 
         prompt = f"You are a mid-term trend analyst specializing in {ticker}. Based on the following price data and technical indicators, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
         
-        # Add mid-term price trend with moving averages and RSI
+        # mid-term price trend with moving averages and RSI
         prompt += f"Mid-Term Price & RSI Data for {ticker} (last 20 data points):\n"
         prompt += mid_term_data[['close', 'rsi']].tail(20).to_string() + "\n\n"
         prompt += "5-day Moving Average:\n"
