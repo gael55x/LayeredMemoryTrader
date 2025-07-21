@@ -14,7 +14,7 @@ class Trader:
             self.config = yaml.safe_load(f)
 
         self.data_manager = DataManager(self.config, backtest_mode=backtest_mode)
-        self.memory_manager = MemoryManager(self.config['memory_sizes'])
+        self.memory_manager = MemoryManager(self.config['memory_horizons'])
         self.semantic_memory = SemanticMemory()
 
         # Initialize agents with semantic memory
