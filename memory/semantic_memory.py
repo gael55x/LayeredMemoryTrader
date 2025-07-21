@@ -11,11 +11,18 @@ class SemanticMemory:
 
     def add_memory(self, text: str):
         embedding = self.model.encode([text])
+        if embedding.shape[1] != self.dimension:
+            print(f"Warning: Embedding dimension mismatch on add. Expected {self.dimension}, got {embedding.shape[1]}. Skipping memory.")
+            return
         self.index.add(np.array(embedding, dtype='float32'))
         self.entries.append(text)
 
     def search_memory(self, query_text: str, k: int = 5) -> list:
         query_embedding = self.model.encode([query_text])
+        if query_embedding.shape[1] != self.dimension:
+            print(f"Warning: Embedding dimension mismatch on search. Expected {self.dimension}, got {query_embedding.shape[1]}. Skipping search.")
+            return []
+            
         distances, indices = self.index.search(np.array(query_embedding, dtype='float32'), k)
         
         results = []
