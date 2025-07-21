@@ -26,24 +26,21 @@ def evaluate_performance(trader: Trader):
     
     # Quantitative Analysis 
     total_trades = len(reflections[reflections['decision'] != 'HOLD'])
-    wins = reflections[reflections['outcome'] == 'profit'].shape[0]
-    win_rate = (wins / total_trades) * 100 if total_trades > 0 else 0
     
-    print(f"Total Trades: {total_trades}")
-    print(f"Wins: {wins}")
-    print(f"Win Rate: {win_rate:.2f}%")
+    print(f"Total Trades Executed: {total_trades}")
     
-    # Plot Win/Loss Rate 
+    # Plot Decision Distribution
     plt.figure(figsize=(8, 6))
-    reflections['outcome'].value_counts().plot(kind='pie', autopct='%1.1f%%', colors=['green', 'red', 'grey'])
-    plt.title('Trade Outcome Distribution')
+    decision_counts = reflections['decision'].value_counts()
+    decision_counts.plot(kind='pie', autopct='%1.1f%%', colors=['skyblue', 'salmon', 'lightgrey'])
+    plt.title('Trade Decision Distribution (BUY/SELL/HOLD)')
     plt.ylabel('')
-    win_loss_plot_path = os.path.join(results_dir, 'win_loss_pie_chart.png')
-    plt.savefig(win_loss_plot_path)
+    decision_plot_path = os.path.join(results_dir, 'decision_distribution_pie_chart.png')
+    plt.savefig(decision_plot_path)
     plt.close()
-    print(f"Win/loss chart saved to {win_loss_plot_path}")
+    print(f"Decision distribution chart saved to {decision_plot_path}")
 
-    # Plot Portfolio Performance vs. Buy and Hold 
+    # Plot Portfolio Performance 
     plt.figure(figsize=(14, 8))
     for ticker, portfolio in trader.portfolios.items():
         if portfolio['value_history']:
@@ -86,7 +83,8 @@ def evaluate_performance(trader: Trader):
             report_content += f"- **Sharpe Ratio:** {sharpe_ratio:.2f}\n"
             report_content += f"- **Max Drawdown:** {max_drawdown:.2%}\n\n"
             
-            print(f"\n--- {ticker} Advanced Metrics ---")
+            print(f"\n {ticker} Advanced Metrics:")
+            print(f"Final Portfolio Value: ${df.iloc[-1]:,.2f}")
             print(f"Sharpe Ratio: {sharpe_ratio:.2f}")
             print(f"Max Drawdown: {max_drawdown:.2%}")
 

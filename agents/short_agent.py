@@ -22,11 +22,13 @@ class ShortTermAgent(BaseAgent):
         short_term_data = memory_snapshot.get('short_term')
         if short_term_data is None or short_term_data.empty:
             return 'HOLD', 0.5
+            
+        ticker = short_term_data['ticker'].iloc[-1]
 
         # Prepare the Prompt 
-        prompt = "You are a short-term momentum trader. Based on the recent price action, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
-        prompt += "Short-Term Price Data (last 10 data points):\n"
-        prompt += short_term_data.tail(10).to_string() + "\n"
+        prompt = f"You are a short-term momentum trader specializing in {ticker}. Based on the recent price action and RSI, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
+        prompt += f"Short-Term Price & RSI Data for {ticker} (last 10 data points):\n"
+        prompt += short_term_data[['close', 'rsi']].tail(10).to_string() + "\n"
 
         # Get LLM Response 
         try:

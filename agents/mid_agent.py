@@ -22,13 +22,15 @@ class MidTermAgent(BaseAgent):
         mid_term_data = memory_snapshot.get('mid_term')
         if mid_term_data is None or mid_term_data.empty or len(mid_term_data) < 20:
             return 'HOLD', 0.5
+            
+        ticker = mid_term_data['ticker'].iloc[-1]
 
         # Prepare the Prompt 
-        prompt = "You are a mid-term trend analyst. Based on the following price data, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
+        prompt = f"You are a mid-term trend analyst specializing in {ticker}. Based on the following price data and technical indicators, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
         
-        # Add mid-term price trend with moving averages
-        prompt += "Mid-Term Price Data (last 20 data points):\n"
-        prompt += mid_term_data.tail(20).to_string() + "\n\n"
+        # Add mid-term price trend with moving averages and RSI
+        prompt += f"Mid-Term Price & RSI Data for {ticker} (last 20 data points):\n"
+        prompt += mid_term_data[['close', 'rsi']].tail(20).to_string() + "\n\n"
         prompt += "5-day Moving Average:\n"
         prompt += mid_term_data['close'].rolling(window=5).mean().tail().to_string() + "\n\n"
         prompt += "20-day Moving Average:\n"

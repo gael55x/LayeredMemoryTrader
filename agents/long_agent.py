@@ -22,13 +22,15 @@ class LongTermAgent(BaseAgent):
         long_term_data = memory_snapshot.get('long_term')
         if long_term_data is None or long_term_data.empty:
             return 'HOLD', 0.5
+            
+        ticker = long_term_data['ticker'].iloc[-1]
 
-        # Prepare the Prompt 
-        prompt = "You are a long-term trading analyst. Based on the following data, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
+        # Prepare the Prompt
+        prompt = f"You are a long-term trading analyst specializing in {ticker}. Based on the following data, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
         
         # Add long-term price trend
-        prompt += "Long-Term Price Trend (last 10 data points):\n"
-        prompt += long_term_data.tail(10).to_string() + "\n\n"
+        prompt += f"Long-Term Price & RSI Data for {ticker} (last 10 data points):\n"
+        prompt += long_term_data[['close', 'rsi']].tail(10).to_string() + "\n\n"
 
         # Add semantic memory context
         try:

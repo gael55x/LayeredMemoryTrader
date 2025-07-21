@@ -89,17 +89,23 @@ class Trader:
                     final_decision = 'HOLD' # Override decision if confidence is too low
                     outcome = 'neutral'
                 
+                # The outcome of a trade is only known when it's closed.
+                # We will simplify the 'outcome' and focus the reflection on the 'why'.
+                trade_outcome = "trade_executed" if final_decision != 'HOLD' else 'hold'
+                
                 # Update portfolio value history
                 portfolio_value = self.portfolios[ticker]['cash'] + self.portfolios[ticker]['shares'] * current_price
                 self.portfolios[ticker]['value_history'].append((current_data_slice.index[-1], portfolio_value))
 
-                reflection_text = f"[{ticker}] Decision: {final_decision}, Confidence: {final_confidence:.2f}, Portfolio Value: ${portfolio_value:,.2f}"
+                # Summarize agent votes for a more insightful reflection
+                agent_votes_summary = ", ".join([f"{v['agent'].replace(' Agent', '')}: {v['decision']}({v['confidence']:.1f})" for v in votes])
+                reflection_text = f"[{ticker}] Decision: {final_decision}, Conf: {final_confidence:.2f}. Votes: [{agent_votes_summary}]. Value: ${portfolio_value:,.2f}"
                 
                 self.memory_manager.add_reflection(
                     timestamp=current_data_slice.index[-1],
                     decision=final_decision,
                     confidence=final_confidence,
-                    outcome=outcome,
+                    outcome=trade_outcome,
                     reflection=reflection_text
                 )
 
