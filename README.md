@@ -25,6 +25,30 @@ This project is inspired by the paper ["TradingGPT: Multi-Agent System with Laye
 5.  **Reflection:** The outcome of the decision is simulated, and a reflection is generated and stored.
 6.  **Evaluation:** The `evaluate.py` script analyzes the stored reflections to gauge the performance of the trading strategy.
 
+## Results
+
+The system's performance is evaluated through comprehensive backtesting and analysis. Below are the key results from the evaluation:
+
+### Decision Distribution
+
+The following chart shows how the trading decisions are distributed across BUY, SELL, and HOLD actions:
+
+![Decision Distribution](documentation/results/decision_distribution_pie_chart.png)
+
+### Portfolio Performance
+
+This chart compares the performance of our multi-agent trading system against a simple "Buy and Hold" benchmark strategy:
+
+![Portfolio Performance](documentation/results/portfolio_performance.png)
+
+The evaluation generates detailed performance metrics including:
+- **Sharpe Ratio:** Risk-adjusted return measurement
+- **Maximum Drawdown:** Largest peak-to-trough decline
+- **Final Portfolio Value:** Compared against buy-and-hold benchmark
+- **Trade Log:** Complete record of all trading decisions and outcomes
+
+For detailed performance metrics, see the generated `documentation/results/summary_report.md` after running the evaluation.
+
 ## Getting Started
 
 ### Prerequisites
