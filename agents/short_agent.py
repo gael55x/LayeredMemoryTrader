@@ -23,15 +23,15 @@ class ShortTermAgent(BaseAgent):
         if short_term_data is None or short_term_data.empty:
             return 'HOLD', 0.5
 
-        # --- Prepare the Prompt ---
+        # Prepare the Prompt 
         prompt = "You are a short-term momentum trader. Based on the recent price action, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
         prompt += "Short-Term Price Data (last 10 data points):\n"
         prompt += short_term_data.tail(10).to_string() + "\n"
 
-        # --- Get LLM Response ---
+        # Get LLM Response 
         try:
             response = self.model.generate_content(prompt)
-            # --- Parse the Response ---
+            # Parse the Response 
             vote_match = re.search(r"VOTE:\s*(BUY|SELL|HOLD)", response.text, re.IGNORECASE)
             confidence_match = re.search(r"CONFIDENCE:\s*([0-9.]+)", response.text, re.IGNORECASE)
 

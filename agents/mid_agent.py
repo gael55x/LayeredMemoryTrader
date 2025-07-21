@@ -23,7 +23,7 @@ class MidTermAgent(BaseAgent):
         if mid_term_data is None or mid_term_data.empty or len(mid_term_data) < 20:
             return 'HOLD', 0.5
 
-        # --- Prepare the Prompt ---
+        # Prepare the Prompt 
         prompt = "You are a mid-term trend analyst. Based on the following price data, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
         
         # Add mid-term price trend with moving averages
@@ -34,10 +34,10 @@ class MidTermAgent(BaseAgent):
         prompt += "20-day Moving Average:\n"
         prompt += mid_term_data['close'].rolling(window=20).mean().tail().to_string() + "\n"
 
-        # --- Get LLM Response ---
+        # Get LLM Response 
         try:
             response = self.model.generate_content(prompt)
-            # --- Parse the Response ---
+            # Parse the Response 
             vote_match = re.search(r"VOTE:\s*(BUY|SELL|HOLD)", response.text, re.IGNORECASE)
             confidence_match = re.search(r"CONFIDENCE:\s*([0-9.]+)", response.text, re.IGNORECASE)
 

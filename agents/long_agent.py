@@ -23,7 +23,7 @@ class LongTermAgent(BaseAgent):
         if long_term_data is None or long_term_data.empty:
             return 'HOLD', 0.5
 
-        # --- Prepare the Prompt ---
+        # Prepare the Prompt 
         prompt = "You are a long-term trading analyst. Based on the following data, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\n"
         
         # Add long-term price trend
@@ -41,10 +41,10 @@ class LongTermAgent(BaseAgent):
             # Not enough memories to search or other value error
             prompt += "No significant news or reflections found.\n"
         
-        # --- Get LLM Response ---
+        # Get LLM Response 
         try:
             response = self.model.generate_content(prompt)
-            # --- Parse the Response ---
+            # Parse the Response 
             vote_match = re.search(r"VOTE:\s*(BUY|SELL|HOLD)", response.text, re.IGNORECASE)
             confidence_match = re.search(r"CONFIDENCE:\s*([0-9.]+)", response.text, re.IGNORECASE)
 

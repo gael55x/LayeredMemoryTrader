@@ -6,4 +6,5 @@ requests
 scikit-learn
 yfinance
 python-dotenv
-google-generativeai 
+google-generativeai
+matplotlib 

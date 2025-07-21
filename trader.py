@@ -24,6 +24,7 @@ class Trader:
         
         self.agents = [self.short_term_agent, self.mid_term_agent, self.long_term_agent]
         self.debate = Debate(self.agents)
+        self.portfolios = {}
 
     def run_backtest(self):
         print("Starting backtest...")
@@ -31,6 +32,7 @@ class Trader:
 
         for ticker in tickers:
             print(f"\n--- Running backtest for {ticker} ---")
+            self.portfolios[ticker] = {'cash': 10000, 'shares': 0, 'value_history': []}
             ticker_data = self.data_manager.get_data_for_ticker(ticker)
             
             if ticker_data.empty:
@@ -39,30 +41,50 @@ class Trader:
 
             # Iterate through the data for the current ticker
             for i in range(1, len(ticker_data)):
+                # Run debate only once a week (every 5 trading days) 
+                if i % 5 != 0:
+                    continue
+
+                current_price = ticker_data['close'].iloc[i]
                 current_data_slice = ticker_data.iloc[:i]
                 self.memory_manager.update_memory(current_data_slice)
                 memory_snapshot = self.memory_manager.get_memory_snapshot()
 
-                # Simulate adding a memory event
+                # Simulate adding a memory event (if news were available)
                 if 'news' in current_data_slice.columns and not pd.isna(current_data_slice['news'].iloc[-1]):
                     self.semantic_memory.add_memory(current_data_slice['news'].iloc[-1])
 
                 final_decision, final_confidence, votes = self.debate.run(memory_snapshot)
 
-                # Simulate trade outcome and reflection
-                simulated_outcome = "profit" if final_decision == "BUY" else "loss" 
-                reflection_text = f"[{ticker}] The decision to {final_decision} resulted in a {simulated_outcome}. Confidence was {final_confidence:.2f}."
+                # Simulate Portfolio Transaction 
+                if final_decision == 'BUY' and self.portfolios[ticker]['cash'] > current_price:
+                    shares_to_buy = self.portfolios[ticker]['cash'] / current_price
+                    self.portfolios[ticker]['shares'] += shares_to_buy
+                    self.portfolios[ticker]['cash'] = 0
+                    outcome = 'profit' # Simplified for reflection
+                elif final_decision == 'SELL' and self.portfolios[ticker]['shares'] > 0:
+                    self.portfolios[ticker]['cash'] += self.portfolios[ticker]['shares'] * current_price
+                    self.portfolios[ticker]['shares'] = 0
+                    outcome = 'profit' # Simplified for reflection
+                else: # HOLD
+                    outcome = 'neutral'
+                
+                # Update portfolio value history
+                portfolio_value = self.portfolios[ticker]['cash'] + self.portfolios[ticker]['shares'] * current_price
+                self.portfolios[ticker]['value_history'].append((current_data_slice.index[-1], portfolio_value))
+
+                reflection_text = f"[{ticker}] Decision: {final_decision}, Confidence: {final_confidence:.2f}, Portfolio Value: ${portfolio_value:,.2f}"
                 
                 self.memory_manager.add_reflection(
                     timestamp=current_data_slice.index[-1],
                     decision=final_decision,
                     confidence=final_confidence,
-                    outcome=simulated_outcome,
+                    outcome=outcome,
                     reflection=reflection_text
                 )
 
-                if i % 100 == 0: # Print progress every 100 days
-                    print(f"  Processed {i} days for {ticker}. Last decision: {final_decision}")
+                if i % 100 == 0: # Print progress every 100 (processed) days
+                    print(f"  Processed up to day {i} for {ticker}. Last decision: {final_decision}")
 
         print("\nBacktest finished.")
 
