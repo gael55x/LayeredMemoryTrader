@@ -4,4 +4,6 @@ pandas
 PyYAML
 requests
 scikit-learn
-yfinance 
+yfinance
+python-dotenv
+google-generativeai 

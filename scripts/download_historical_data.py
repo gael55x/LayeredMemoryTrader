@@ -2,20 +2,28 @@ import yfinance as yf
 import pandas as pd
 import os
 
-def download_historical_data(ticker='AAPL', start_date='2020-01-01', end_date='2024-08-31', output_file='historical_data.csv'):
+def download_historical_data(tickers=['AAPL', 'MSFT', 'GOOG'], start_date='2020-01-01', end_date='2024-08-31', output_file='historical_data.csv'):
     """
-    Downloads historical OHLCV data from Yahoo Finance and saves it to a CSV file.
+    Downloads historical OHLCV data from Yahoo Finance for multiple tickers and saves it to a single CSV file.
     """
-    print(f"Downloading historical data for {ticker} from {start_date} to {end_date}...")
-    df = yf.download(ticker, start=start_date, end=end_date)
+    print(f"Downloading historical data for {tickers} from {start_date} to {end_date}...")
+    
+    # Download data for all tickers
+    df = yf.download(tickers, start=start_date, end=end_date)
     
     if df.empty:
-        print(f"No data found for ticker {ticker}.")
+        print(f"No data found for tickers {tickers}.")
         return
 
-    # Convert timestamp to a column named 'time'
-    df.reset_index(inplace=True)
-    df.rename(columns={'Date': 'time', 'Open': 'open', 'High': 'high', 'Low': 'low', 'Close': 'close', 'Volume': 'volume'}, inplace=True)
+    # Restructure the DataFrame
+    df = df.stack(level=1).rename_axis(['time', 'ticker']).reset_index()
+    df.rename(columns={
+        'Open': 'open',
+        'High': 'high',
+        'Low': 'low',
+        'Close': 'close',
+        'Volume': 'volume'
+    }, inplace=True)
     
     # Add a placeholder for news
     df['news'] = pd.NA
