@@ -8,6 +8,14 @@ from agents.mid_agent import MidTermAgent
 from agents.long_agent import LongTermAgent
 from agents.debate import Debate
 
+def calculate_rsi(data, window=14):
+    delta = data['close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
+
 class Trader:
     def __init__(self, config_path='config.yaml', backtest_mode='train'):
         with open(config_path, 'r') as f:
@@ -34,6 +42,7 @@ class Trader:
             print(f"\n--- Running backtest for {ticker} ---")
             self.portfolios[ticker] = {'cash': 10000, 'shares': 0, 'value_history': []}
             ticker_data = self.data_manager.get_data_for_ticker(ticker)
+            ticker_data['rsi'] = calculate_rsi(ticker_data)
             
             if ticker_data.empty:
                 print(f"No data for {ticker}, skipping.")
