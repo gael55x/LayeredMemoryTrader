@@ -16,14 +16,14 @@ def evaluate_performance(trader: Trader):
         print("No trades were made during the backtest.")
         return
 
-    # --- Save Trade Log ---
+    # Save Trade Log 
     trade_log_path = os.path.join(results_dir, 'trade_log.csv')
     reflections.to_csv(trade_log_path, index=False)
     print(f"\nTrade log saved to {trade_log_path}")
 
-    print("\n--- Backtest Evaluation Results ---")
+    print("\n Backtest Evaluation Results:")
     
-    # --- Quantitative Analysis ---
+    # Quantitative Analysis 
     total_trades = len(reflections[reflections['decision'] != 'HOLD'])
     wins = reflections[reflections['outcome'] == 'profit'].shape[0]
     win_rate = (wins / total_trades) * 100 if total_trades > 0 else 0
@@ -32,7 +32,7 @@ def evaluate_performance(trader: Trader):
     print(f"Wins: {wins}")
     print(f"Win Rate: {win_rate:.2f}%")
     
-    # --- Plot Win/Loss Rate ---
+    # Plot Win/Loss Rate 
     plt.figure(figsize=(8, 6))
     reflections['outcome'].value_counts().plot(kind='pie', autopct='%1.1f%%', colors=['green', 'red', 'grey'])
     plt.title('Trade Outcome Distribution')
@@ -42,7 +42,7 @@ def evaluate_performance(trader: Trader):
     plt.close()
     print(f"Win/loss chart saved to {win_loss_plot_path}")
 
-    # --- Plot Portfolio Performance ---
+    # Plot Portfolio Performance 
     plt.figure(figsize=(14, 8))
     for ticker, portfolio in trader.portfolios.items():
         if portfolio['value_history']:
