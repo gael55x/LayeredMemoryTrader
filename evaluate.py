@@ -64,27 +64,36 @@ def evaluate_performance(trader: Trader):
     print(f"Portfolio performance graph saved to {portfolio_plot_path}")
 
     # Advanced Metrics & Summary Report 
-    report_content = "# Trading Strategy Performance Report\n\n"
+    report_content = "# Trading Strategy Performance Report\n\nThis report analyzes the performance of the agent-based trading strategy against a 'Buy and Hold' benchmark.\n\n"
     for ticker, portfolio in trader.portfolios.items():
         if portfolio['value_history']:
-            df = pd.DataFrame(portfolio['value_history'], columns=['time', 'value']).set_index('time')['value']
-            
-            # Sharpe Ratio
-            daily_returns = df.pct_change().dropna()
+            # Correct Sharpe Ratio Calculation 
+            # Create a daily-indexed DataFrame
+            ticker_data = trader.data_manager.get_data_for_ticker(ticker)
+            portfolio_df = pd.DataFrame(portfolio['value_history'], columns=['time', 'value']).set_index('time')
+            daily_portfolio_values = portfolio_df.reindex(ticker_data.index).ffill()
+
+            # Calculate daily returns from the properly sampled series
+            daily_returns = daily_portfolio_values['value'].pct_change().dropna()
             sharpe_ratio = np.sqrt(252) * daily_returns.mean() / daily_returns.std() if daily_returns.std() != 0 else 0
             
-            # Max Drawdown
-            cumulative_max = df.cummax()
-            drawdown = (df - cumulative_max) / cumulative_max
+            # Max Drawdown 
+            cumulative_max = daily_portfolio_values['value'].cummax()
+            drawdown = (daily_portfolio_values['value'] - cumulative_max) / cumulative_max
             max_drawdown = drawdown.min()
+            
+            # Buy & Hold Performance 
+            buy_and_hold_final_value = (10000 / ticker_data['close'].iloc[0]) * ticker_data['close'].iloc[-1]
+
 
             report_content += f"## {ticker} Performance\n"
-            report_content += f"- **Final Portfolio Value:** ${df.iloc[-1]:,.2f}\n"
-            report_content += f"- **Sharpe Ratio:** {sharpe_ratio:.2f}\n"
+            report_content += f"- **Agent Final Portfolio Value:** ${daily_portfolio_values['value'].iloc[-1]:,.2f}\n"
+            report_content += f"- **Buy & Hold Final Value:** ${buy_and_hold_final_value:,.2f}\n"
+            report_content += f"- **Sharpe Ratio (annualized daily):** {sharpe_ratio:.2f}\n"
             report_content += f"- **Max Drawdown:** {max_drawdown:.2%}\n\n"
             
             print(f"\n {ticker} Advanced Metrics:")
-            print(f"Final Portfolio Value: ${df.iloc[-1]:,.2f}")
+            print(f"Final Portfolio Value: ${daily_portfolio_values['value'].iloc[-1]:,.2f}")
             print(f"Sharpe Ratio: {sharpe_ratio:.2f}")
             print(f"Max Drawdown: {max_drawdown:.2%}")
 
