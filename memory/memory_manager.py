@@ -1,4 +1,5 @@
 import pandas as pd
+import yaml
 
 class MemoryManager:
     def __init__(self, horizons: dict):
@@ -52,7 +53,6 @@ class MemoryManager:
         }
 
 if __name__ == '__main__':
-    import yaml
 
     # Load configuration
     with open('../config.yaml', 'r') as f:
