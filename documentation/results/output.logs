@@ -1,36 +1,38 @@
 Running backtest for evaluation...
-Loading historical data from historical_data.csv...
+Attempting to load data with news from historical_data_with_news.csv...
+Successfully loaded data with news from historical_data_with_news.csv
 Historical data for testing loaded for tickers: ['AAPL' 'GOOG' 'MSFT'].
+News data available: 381 records with news information
 Starting backtest...
 
 --- Running backtest for AAPL ---
 ShortTermAgent LLM Vote: SELL, Confidence: 0.8
 LongTermAgent LLM Vote: HOLD, Confidence: 0.2
-/Users/gailleamolong/Documents/Documents/LayeredMemoryTrader/memory/memory_manager.py:41: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+/Users/gailleamolong/Documents/Documents/LayeredMemoryTrader/memory/memory_manager.py:42: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
   self.reflection_memory = pd.concat([self.reflection_memory, new_reflection], ignore_index=True)
 ShortTermAgent LLM Vote: HOLD, Confidence: 0.2
 LongTermAgent LLM Vote: HOLD, Confidence: 0.2
 ShortTermAgent LLM Vote: SELL, Confidence: 0.6
-MidTermAgent LLM Vote: HOLD, Confidence: 0.2
+MidTermAgent LLM Vote: HOLD, Confidence: 0.3
 LongTermAgent LLM Vote: HOLD, Confidence: 0.3
-ShortTermAgent LLM Vote: HOLD, Confidence: 0.4
-MidTermAgent LLM Vote: HOLD, Confidence: 0.6
-LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.6
 MidTermAgent LLM Vote: HOLD, Confidence: 0.6
-LongTermAgent LLM Vote: HOLD, Confidence: 0.4
+LongTermAgent LLM Vote: HOLD, Confidence: 0.3
+ShortTermAgent LLM Vote: HOLD, Confidence: 0.3
+MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.6
 LongTermAgent LLM Vote: BUY, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
-MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+MidTermAgent LLM Vote: SELL, Confidence: 0.7
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.6
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
-LongTermAgent LLM Vote: BUY, Confidence: 0.8
+LongTermAgent LLM Vote: BUY, Confidence: 0.7
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: BUY, Confidence: 0.8
@@ -38,27 +40,27 @@ ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
-MidTermAgent LLM Vote: BUY, Confidence: 0.7
-LongTermAgent LLM Vote: HOLD, Confidence: 0.6
-ShortTermAgent LLM Vote: SELL, Confidence: 0.7
-MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: HOLD, Confidence: 0.6
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
+ShortTermAgent LLM Vote: SELL, Confidence: 0.7
+MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: BUY, Confidence: 0.8
+ShortTermAgent LLM Vote: SELL, Confidence: 0.7
+MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.6
+ShortTermAgent LLM Vote: BUY, Confidence: 0.6
+MidTermAgent LLM Vote: BUY, Confidence: 0.8
+LongTermAgent LLM Vote: HOLD, Confidence: 0.6
+ShortTermAgent LLM Vote: BUY, Confidence: 0.8
+MidTermAgent LLM Vote: BUY, Confidence: 0.8
+LongTermAgent LLM Vote: BUY, Confidence: 0.7
 ShortTermAgent LLM Vote: SELL, Confidence: 0.8
-MidTermAgent LLM Vote: HOLD, Confidence: 0.6
-LongTermAgent LLM Vote: HOLD, Confidence: 0.6
-ShortTermAgent LLM Vote: BUY, Confidence: 0.6
-MidTermAgent LLM Vote: BUY, Confidence: 0.7
-LongTermAgent LLM Vote: HOLD, Confidence: 0.6
-ShortTermAgent LLM Vote: BUY, Confidence: 0.8
-MidTermAgent LLM Vote: BUY, Confidence: 0.8
-LongTermAgent LLM Vote: BUY, Confidence: 0.8
-ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: HOLD, Confidence: 0.6
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.8
@@ -72,25 +74,25 @@ ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: SELL, Confidence: 0.8
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.7
-MidTermAgent LLM Vote: BUY, Confidence: 0.7
-LongTermAgent LLM Vote: BUY, Confidence: 0.7
+MidTermAgent LLM Vote: BUY, Confidence: 0.6
+LongTermAgent LLM Vote: BUY, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
-MidTermAgent LLM Vote: BUY, Confidence: 0.7
+MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: BUY, Confidence: 0.8
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 
 --- Running backtest for GOOG ---
-ShortTermAgent LLM Vote: SELL, Confidence: 0.7
+ShortTermAgent LLM Vote: SELL, Confidence: 0.8
+MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.7
+ShortTermAgent LLM Vote: BUY, Confidence: 0.6
 MidTermAgent LLM Vote: HOLD, Confidence: 0.0
-LongTermAgent LLM Vote: HOLD, Confidence: 0.3
-ShortTermAgent LLM Vote: BUY, Confidence: 0.6
-MidTermAgent LLM Vote: HOLD, Confidence: 0.3
-LongTermAgent LLM Vote: HOLD, Confidence: 0.3
-ShortTermAgent LLM Vote: BUY, Confidence: 0.6
-MidTermAgent LLM Vote: HOLD, Confidence: 0.3
 LongTermAgent LLM Vote: HOLD, Confidence: 0.2
+ShortTermAgent LLM Vote: BUY, Confidence: 0.7
+MidTermAgent LLM Vote: BUY, Confidence: 0.6
+LongTermAgent LLM Vote: BUY, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: HOLD, Confidence: 0.7
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
@@ -98,23 +100,23 @@ ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: HOLD, Confidence: 0.6
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
-MidTermAgent LLM Vote: BUY, Confidence: 0.7
+MidTermAgent LLM Vote: HOLD, Confidence: 0.6
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: HOLD, Confidence: 0.6
-LongTermAgent LLM Vote: HOLD, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.7
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
 LongTermAgent LLM Vote: BUY, Confidence: 0.7
-ShortTermAgent LLM Vote: HOLD, Confidence: 0.6
+ShortTermAgent LLM Vote: BUY, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
-MidTermAgent LLM Vote: BUY, Confidence: 0.8
+MidTermAgent LLM Vote: BUY, Confidence: 0.7
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
-LongTermAgent LLM Vote: BUY, Confidence: 0.7
+LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
@@ -131,47 +133,47 @@ ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: BUY, Confidence: 0.7
 ShortTermAgent LLM Vote: BUY, Confidence: 0.7
-MidTermAgent LLM Vote: BUY, Confidence: 0.7
+MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: BUY, Confidence: 0.7
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
-LongTermAgent LLM Vote: BUY, Confidence: 0.8
+LongTermAgent LLM Vote: BUY, Confidence: 0.7
 ShortTermAgent LLM Vote: SELL, Confidence: 0.8
 MidTermAgent LLM Vote: SELL, Confidence: 0.7
-LongTermAgent LLM Vote: SELL, Confidence: 0.8
+LongTermAgent LLM Vote: SELL, Confidence: 0.7
 ShortTermAgent LLM Vote: SELL, Confidence: 0.8
 MidTermAgent LLM Vote: SELL, Confidence: 0.8
-LongTermAgent LLM Vote: SELL, Confidence: 0.8
+LongTermAgent LLM Vote: SELL, Confidence: 0.7
   Processed up to day 100 for GOOG. Last decision: SELL
-ShortTermAgent LLM Vote: SELL, Confidence: 0.8
+ShortTermAgent LLM Vote: BUY, Confidence: 0.4
 MidTermAgent LLM Vote: SELL, Confidence: 0.8
-LongTermAgent LLM Vote: HOLD, Confidence: 0.6
+LongTermAgent LLM Vote: SELL, Confidence: 0.7
 ShortTermAgent LLM Vote: SELL, Confidence: 0.8
 MidTermAgent LLM Vote: SELL, Confidence: 0.8
 LongTermAgent LLM Vote: SELL, Confidence: 0.8
 ShortTermAgent LLM Vote: BUY, Confidence: 0.6
-MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+MidTermAgent LLM Vote: BUY, Confidence: 0.6
 LongTermAgent LLM Vote: BUY, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.6
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
-LongTermAgent LLM Vote: BUY, Confidence: 0.7
+LongTermAgent LLM Vote: BUY, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
-LongTermAgent LLM Vote: BUY, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 
 --- Running backtest for MSFT ---
-ShortTermAgent LLM Vote: HOLD, Confidence: 0.4
-MidTermAgent LLM Vote: HOLD, Confidence: 0.0
-LongTermAgent LLM Vote: HOLD, Confidence: 0.3
+ShortTermAgent LLM Vote: HOLD, Confidence: 0.2
+MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.2
 ShortTermAgent LLM Vote: BUY, Confidence: 0.6
 MidTermAgent LLM Vote: HOLD, Confidence: 0.0
-LongTermAgent LLM Vote: HOLD, Confidence: 0.2
+LongTermAgent LLM Vote: HOLD, Confidence: 0.3
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
-MidTermAgent LLM Vote: BUY, Confidence: 0.3
+MidTermAgent LLM Vote: HOLD, Confidence: 0.3
 LongTermAgent LLM Vote: BUY, Confidence: 0.7
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: HOLD, Confidence: 0.6
-LongTermAgent LLM Vote: HOLD, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.4
 ShortTermAgent LLM Vote: BUY, Confidence: 0.6
 MidTermAgent LLM Vote: HOLD, Confidence: 0.6
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
@@ -182,17 +184,17 @@ ShortTermAgent LLM Vote: SELL, Confidence: 0.8
 MidTermAgent LLM Vote: SELL, Confidence: 0.8
 LongTermAgent LLM Vote: SELL, Confidence: 0.8
 ShortTermAgent LLM Vote: BUY, Confidence: 0.6
-MidTermAgent LLM Vote: HOLD, Confidence: 0.6
-LongTermAgent LLM Vote: BUY, Confidence: 0.6
-ShortTermAgent LLM Vote: BUY, Confidence: 0.7
-MidTermAgent LLM Vote: HOLD, Confidence: 0.7
-LongTermAgent LLM Vote: BUY, Confidence: 0.6
-ShortTermAgent LLM Vote: BUY, Confidence: 0.7
+MidTermAgent LLM Vote: SELL, Confidence: 0.7
+LongTermAgent LLM Vote: HOLD, Confidence: 0.6
+ShortTermAgent LLM Vote: BUY, Confidence: 0.6
+MidTermAgent LLM Vote: BUY, Confidence: 0.6
+LongTermAgent LLM Vote: HOLD, Confidence: 0.6
+ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
-LongTermAgent LLM Vote: BUY, Confidence: 0.8
+LongTermAgent LLM Vote: BUY, Confidence: 0.7
 ShortTermAgent LLM Vote: BUY, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
-LongTermAgent LLM Vote: BUY, Confidence: 0.8
+LongTermAgent LLM Vote: BUY, Confidence: 0.7
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: BUY, Confidence: 0.8
@@ -205,10 +207,10 @@ LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: BUY, Confidence: 0.8
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
 LongTermAgent LLM Vote: BUY, Confidence: 0.8
-ShortTermAgent LLM Vote: HOLD, Confidence: 0.6
-MidTermAgent LLM Vote: HOLD, Confidence: 0.6
+ShortTermAgent LLM Vote: BUY, Confidence: 0.8
+MidTermAgent LLM Vote: BUY, Confidence: 0.7
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
-ShortTermAgent LLM Vote: SELL, Confidence: 0.8
+ShortTermAgent LLM Vote: SELL, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.8
 LongTermAgent LLM Vote: HOLD, Confidence: 0.6
 ShortTermAgent LLM Vote: SELL, Confidence: 0.7
@@ -223,10 +225,10 @@ LongTermAgent LLM Vote: SELL, Confidence: 0.8
   Processed up to day 100 for MSFT. Last decision: SELL
 ShortTermAgent LLM Vote: SELL, Confidence: 0.8
 MidTermAgent LLM Vote: SELL, Confidence: 0.8
-LongTermAgent LLM Vote: SELL, Confidence: 0.8
-ShortTermAgent LLM Vote: SELL, Confidence: 0.7
+LongTermAgent LLM Vote: SELL, Confidence: 0.7
+ShortTermAgent LLM Vote: SELL, Confidence: 0.8
 MidTermAgent LLM Vote: SELL, Confidence: 0.8
-LongTermAgent LLM Vote: BUY, Confidence: 0.6
+LongTermAgent LLM Vote: BUY, Confidence: 0.4
 ShortTermAgent LLM Vote: BUY, Confidence: 0.7
 MidTermAgent LLM Vote: BUY, Confidence: 0.7
 LongTermAgent LLM Vote: BUY, Confidence: 0.6
@@ -242,23 +244,23 @@ Backtest finished.
 Trade log saved to documentation/results/trade_log.csv
 
  Backtest Evaluation Results:
-Total Trades Executed: 39
+Total Trades Executed: 42
 Decision distribution chart saved to documentation/results/decision_distribution_pie_chart.png
 Portfolio performance graph saved to documentation/results/portfolio_performance.png
 
  AAPL Advanced Metrics:
-Final Portfolio Value: $12,895.86
-Sharpe Ratio: 2.91
+Final Portfolio Value: $12,374.20
+Sharpe Ratio: 2.65
 Max Drawdown: -4.51%
 
  GOOG Advanced Metrics:
-Final Portfolio Value: $10,651.41
-Sharpe Ratio: 1.10
-Max Drawdown: -4.67%
+Final Portfolio Value: $12,438.32
+Sharpe Ratio: 2.64
+Max Drawdown: -4.36%
 
  MSFT Advanced Metrics:
-Final Portfolio Value: $9,501.99
-Sharpe Ratio: -0.84
-Max Drawdown: -7.04%
+Final Portfolio Value: $9,339.20
+Sharpe Ratio: -1.22
+Max Drawdown: -8.41%
 
 Summary report saved to documentation/results/summary_report.md
