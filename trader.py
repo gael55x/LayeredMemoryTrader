@@ -77,9 +77,11 @@ class Trader:
                 self.memory_manager.update_memory(current_data_slice)
                 memory_snapshot = self.memory_manager.get_memory_snapshot()
 
-                # Simulate adding a memory event (if news were available)
-                if 'news' in current_data_slice.columns and not pd.isna(current_data_slice['news'].iloc[-1]):
-                    self.semantic_memory.add_memory(current_data_slice['news'].iloc[-1])
+                # Add news to semantic memory if available
+                if 'news_summary' in current_data_slice.columns and not pd.isna(current_data_slice['news_summary'].iloc[-1]):
+                    news_text = current_data_slice['news_summary'].iloc[-1]
+                    if news_text != 'No significant news':
+                        self.semantic_memory.add_memory(news_text)
 
                 final_decision, final_confidence, votes = self.debate.run(memory_snapshot)
 

@@ -7,4 +7,5 @@ scikit-learn
 yfinance
 python-dotenv
 google-generativeai
-matplotlib 
+matplotlib
+sentence-transformers 
