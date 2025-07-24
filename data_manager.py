@@ -16,12 +16,27 @@ class DataManager:
 
     def _load_backtest_data(self):
         """Loads and prepares historical data for backtesting."""
+        # Try to load data with news first, fallback to regular data
+        news_data_path = self.config['backtest'].get('news_data_path', 'historical_data_with_news.csv')
         data_path = self.config['backtest']['full_data_path']
-        print(f"Loading historical data from {data_path}...")
-        self.all_historical_data = pd.read_csv(
-            data_path, 
-            parse_dates=['time']
-        )
+        
+        try:
+            print(f"Attempting to load data with news from {news_data_path}...")
+            self.all_historical_data = pd.read_csv(
+                news_data_path, 
+                parse_dates=['time']
+            )
+            print(f"Successfully loaded data with news from {news_data_path}")
+        except FileNotFoundError:
+            print(f"News data not found at {news_data_path}, loading regular data from {data_path}...")
+            self.all_historical_data = pd.read_csv(
+                data_path, 
+                parse_dates=['time']
+            )
+            # Add placeholder news column if not present
+            if 'news_summary' not in self.all_historical_data.columns:
+                self.all_historical_data['news_summary'] = 'No significant news'
+        
         self.tickers = self.all_historical_data['ticker'].unique()
         
         if self.backtest_mode == 'train':
@@ -39,6 +54,13 @@ class DataManager:
         ]
         self.backtest_iterator = self.all_historical_data.groupby('ticker')
         print(f"Historical data for {self.backtest_mode}ing loaded for tickers: {self.tickers}.")
+        
+        # Check if news data is available
+        if 'news_summary' in self.all_historical_data.columns:
+            news_count = self.all_historical_data['news_summary'].notna().sum()
+            print(f"News data available: {news_count} records with news information")
+        else:
+            print("No news data available in the dataset")
 
     def get_data_for_ticker(self, ticker):
         """Returns the historical data for a specific ticker."""
