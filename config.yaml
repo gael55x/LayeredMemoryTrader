@@ -7,6 +7,9 @@ backtest:
   training_period:
     end: '2024-02-29'
     start: '2020-08-01'
+llm:
+  model: gemini-3.5-flash-lite
+  timeout_ms: 30000
 memory_horizons:
   long_term: 20160
   mid_term: 2880

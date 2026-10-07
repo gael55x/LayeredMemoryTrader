@@ -1,0 +1,15 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "18px",
+    "primaryTextColor": "#172c38",
+    "lineColor": "#526b79"
+  },
+  "flowchart": {
+    "htmlLabels": false,
+    "curve": "linear",
+    "useMaxWidth": false,
+    "wrappingWidth": 230
+  }
+}

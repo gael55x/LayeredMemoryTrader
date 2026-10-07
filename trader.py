@@ -6,6 +6,7 @@ from memory.semantic_memory import SemanticMemory
 from agents.short_agent import ShortTermAgent
 from agents.mid_agent import MidTermAgent
 from agents.long_agent import LongTermAgent
+from agents.base_agent import gemini_api_key
 from agents.debate import Debate
 
 def calculate_rsi(data, window=14):
@@ -34,37 +35,49 @@ class Trader:
     def __init__(self, config_path='config.yaml', backtest_mode='train'):
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
+        # Fail on a missing key before loading data and the sentence-transformer encoder
+        gemini_api_key()
 
         self.data_manager = DataManager(self.config, backtest_mode=backtest_mode)
         self.memory_manager = MemoryManager(self.config['memory_horizons'])
         self.semantic_memory = SemanticMemory()
 
         # Initialize agents with semantic memory
-        self.short_term_agent = ShortTermAgent(name="Short-Term Agent", config={}, semantic_memory=self.semantic_memory)
-        self.mid_term_agent = MidTermAgent(name="Mid-Term Agent", config={}, semantic_memory=self.semantic_memory)
-        self.long_term_agent = LongTermAgent(name="Long-Term Agent", config={}, semantic_memory=self.semantic_memory)
+        self.short_term_agent = ShortTermAgent(name="Short-Term Agent", config=self.config['llm'], semantic_memory=self.semantic_memory)
+        self.mid_term_agent = MidTermAgent(name="Mid-Term Agent", config=self.config['llm'], semantic_memory=self.semantic_memory)
+        self.long_term_agent = LongTermAgent(name="Long-Term Agent", config=self.config['llm'], semantic_memory=self.semantic_memory)
         
         self.agents = [self.short_term_agent, self.mid_term_agent, self.long_term_agent]
         self.debate = Debate(self.agents)
         self.portfolios = {}
+        self.reflection_log = pd.DataFrame(columns=MemoryManager.REFLECTION_COLUMNS)
 
     def run_backtest(self):
         print("Starting backtest...")
         tickers = self.data_manager.tickers
+        # Evaluation keeps the whole run; agent working memory resets per ticker.
+        self.reflection_log = pd.DataFrame(columns=MemoryManager.REFLECTION_COLUMNS)
 
         for ticker in tickers:
             print(f"\n--- Running backtest for {ticker} ---")
             self.portfolios[ticker] = {'cash': 10000, 'shares': 0, 'value_history': []}
+            # Each ticker replay starts from empty memory; reset in place so agents keep their references
+            self.memory_manager.reset()
+            self.semantic_memory.reset()
             ticker_data = self.data_manager.get_data_for_ticker(ticker)
-            
+
+            if ticker_data.empty:
+                print(f"No data for {ticker}, skipping.")
+                continue
+
+            # Indicators and interval slicing assume chronological, unique timestamps
+            if not (ticker_data.index.is_monotonic_increasing and ticker_data.index.is_unique):
+                raise ValueError(f"Timestamps for {ticker} must be sorted and unique")
+
             # --- Add Technical Indicators ---
             ticker_data['rsi'] = calculate_rsi(ticker_data)
             ticker_data['macd'], ticker_data['macd_signal'] = calculate_macd(ticker_data)
             ticker_data['upper_band'], ticker_data['lower_band'] = calculate_bollinger_bands(ticker_data)
-            
-            if ticker_data.empty:
-                print(f"No data for {ticker}, skipping.")
-                continue
 
             # Iterate through the data for the current ticker
             for i in range(1, len(ticker_data)):
@@ -73,7 +86,8 @@ class Trader:
                     continue
 
                 current_price = ticker_data['close'].iloc[i]
-                current_data_slice = ticker_data.iloc[:i]
+                # Append only the five rows since the last decision; MemoryManager accumulates
+                current_data_slice = ticker_data.iloc[i - 5:i]
                 self.memory_manager.update_memory(current_data_slice)
                 memory_snapshot = self.memory_manager.get_memory_snapshot()
 
@@ -121,13 +135,14 @@ class Trader:
                 agent_votes_summary = ", ".join([f"{v['agent'].replace(' Agent', '')}: {v['decision']}({v['confidence']:.1f})" for v in votes])
                 reflection_text = f"[{ticker}] Decision: {final_decision}, Conf: {final_confidence:.2f}. Votes: [{agent_votes_summary}]. Value: ${portfolio_value:,.2f}"
                 
-                self.memory_manager.add_reflection(
+                reflection_row = self.memory_manager.add_reflection(
                     timestamp=current_data_slice.index[-1],
                     decision=final_decision,
                     confidence=final_confidence,
                     outcome=trade_outcome,
                     reflection=reflection_text
                 )
+                self.reflection_log = pd.concat([self.reflection_log, reflection_row], ignore_index=True)
 
                 if i % 100 == 0: # Print progress every 100 (processed) days
                     print(f"  Processed up to day {i} for {ticker}. Last decision: {final_decision}")

@@ -1,20 +1,11 @@
 import pandas as pd
 from agents.base_agent import BaseAgent
 from memory.semantic_memory import SemanticMemory
-import google.generativeai as genai
-import os
-import re
-
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 class MidTermAgent(BaseAgent):
     """
     Agent focusing on mid-term data to make trading decisions, using an LLM for analysis.
     """
-    def __init__(self, name: str, config: dict, semantic_memory: SemanticMemory):
-        super().__init__(name, config, semantic_memory)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
-
     def vote(self, memory_snapshot: dict) -> tuple[str, float]:
         """
         Analyzes mid-term memory using an LLM to decide on a trading action.
@@ -36,22 +27,5 @@ class MidTermAgent(BaseAgent):
         prompt += "20-day Moving Average:\n"
         prompt += mid_term_data['close'].rolling(window=20).mean().tail().to_string() + "\n"
 
-        # Get LLM Response 
-        try:
-            response = self.model.generate_content(prompt)
-            # Parse the Response 
-            vote_match = re.search(r"VOTE:\s*(BUY|SELL|HOLD)", response.text, re.IGNORECASE)
-            confidence_match = re.search(r"CONFIDENCE:\s*([0-9.]+)", response.text, re.IGNORECASE)
-
-            if vote_match and confidence_match:
-                vote = vote_match.group(1).upper()
-                confidence = float(confidence_match.group(1))
-                print(f"MidTermAgent LLM Vote: {vote}, Confidence: {confidence}")
-                return vote, confidence
-            else:
-                print(f"MidTermAgent: Could not parse LLM response: {response.text}")
-                return 'HOLD', 0.5
-                
-        except Exception as e:
-            print(f"An error occurred while calling the Gemini API: {e}")
-            return 'HOLD', 0.5
+        # Get LLM Response
+        return self.ask_llm(prompt)

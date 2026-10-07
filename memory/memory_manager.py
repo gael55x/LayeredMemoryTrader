@@ -2,12 +2,18 @@ import pandas as pd
 import yaml
 
 class MemoryManager:
+    REFLECTION_COLUMNS = ['timestamp', 'decision', 'confidence', 'outcome', 'reflection']
+
     def __init__(self, horizons: dict):
         self.horizons = horizons
+        self.reset()
+
+    def reset(self):
+        """Clears price and working reflection memory, e.g. before replaying another ticker."""
         self.short_term_memory = pd.DataFrame()
         self.mid_term_memory = pd.DataFrame()
         self.long_term_memory = pd.DataFrame()
-        self.reflection_memory = pd.DataFrame(columns=['timestamp', 'decision', 'confidence', 'outcome', 'reflection'])
+        self.reflection_memory = pd.DataFrame(columns=self.REFLECTION_COLUMNS)
 
     def update_memory(self, new_data: pd.DataFrame):
         """
@@ -40,6 +46,7 @@ class MemoryManager:
             'reflection': [reflection]
         })
         self.reflection_memory = pd.concat([self.reflection_memory, new_reflection], ignore_index=True)
+        return new_reflection
 
     def get_memory_snapshot(self) -> dict:
         """
