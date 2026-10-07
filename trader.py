@@ -55,16 +55,23 @@ class Trader:
         for ticker in tickers:
             print(f"\n--- Running backtest for {ticker} ---")
             self.portfolios[ticker] = {'cash': 10000, 'shares': 0, 'value_history': []}
+            # Each ticker replay starts from empty memory; reset in place so agents keep their references
+            self.memory_manager.reset()
+            self.semantic_memory.reset()
             ticker_data = self.data_manager.get_data_for_ticker(ticker)
-            
+
+            if ticker_data.empty:
+                print(f"No data for {ticker}, skipping.")
+                continue
+
+            # Indicators and interval slicing assume chronological, unique timestamps
+            if not (ticker_data.index.is_monotonic_increasing and ticker_data.index.is_unique):
+                raise ValueError(f"Timestamps for {ticker} must be sorted and unique")
+
             # --- Add Technical Indicators ---
             ticker_data['rsi'] = calculate_rsi(ticker_data)
             ticker_data['macd'], ticker_data['macd_signal'] = calculate_macd(ticker_data)
             ticker_data['upper_band'], ticker_data['lower_band'] = calculate_bollinger_bands(ticker_data)
-            
-            if ticker_data.empty:
-                print(f"No data for {ticker}, skipping.")
-                continue
 
             # Iterate through the data for the current ticker
             for i in range(1, len(ticker_data)):
@@ -73,7 +80,8 @@ class Trader:
                     continue
 
                 current_price = ticker_data['close'].iloc[i]
-                current_data_slice = ticker_data.iloc[:i]
+                # Append only the five rows since the last decision; MemoryManager accumulates
+                current_data_slice = ticker_data.iloc[i - 5:i]
                 self.memory_manager.update_memory(current_data_slice)
                 memory_snapshot = self.memory_manager.get_memory_snapshot()
 

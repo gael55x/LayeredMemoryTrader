@@ -4,6 +4,10 @@ import yaml
 class MemoryManager:
     def __init__(self, horizons: dict):
         self.horizons = horizons
+        self.reset()
+
+    def reset(self):
+        """Clears price and reflection memory, e.g. before replaying another ticker."""
         self.short_term_memory = pd.DataFrame()
         self.mid_term_memory = pd.DataFrame()
         self.long_term_memory = pd.DataFrame()

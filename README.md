@@ -27,9 +27,38 @@ This project is inspired by the paper ["TradingGPT: Multi-Agent System with Laye
 6.  **Reflection:** The outcome of the decision is simulated, and a reflection is generated and stored.
 7.  **Evaluation:** The `evaluate.py` script analyzes the stored reflections to gauge the performance of the trading strategy.
 
+## Memory lifecycle in historical replays
+
+A replay runs tickers one after another. Before a ticker’s first decision, its price, reflection and semantic memory stores are cleared. These stores do not carry entries from the previous ticker.
+
+Within a ticker, price history enters memory in 5-row intervals, and each interval is appended once. The replay checks its input before computing indicators:
+
+- It rejects input whose dates are unsorted or duplicated.
+- It skips a ticker with empty data before any indicators are computed.
+
+Earlier versions appended the full cumulative prefix on every update and kept stores alive across tickers. As a result, a prompt could include rows from a different ticker or from after the decision date. For example, a GOOG prompt for 2020-08-07 contained five AAPL rows from February 2024.
+
+### Offline check
+
+From the repository root, use Python 3.12 and a separate environment with the four dependencies needed by this check:
+
+```bash
+python3.12 -m venv /tmp/lmt-memory-check
+/tmp/lmt-memory-check/bin/python -m pip install pandas==2.3.1 numpy==2.4.6 PyYAML==6.0.2 faiss-cpu==1.11.0.post1
+/tmp/lmt-memory-check/bin/python tests/check_memory_replay.py
+```
+
+With the supplied training data, expect 537 decision dates and 1,602 price prompts per run, zero prompt differences, and all boolean checks true. The script runs the replay twice. Every captured price prompt must match one built from the current ticker’s eligible history; any mismatch fails the check.
+
+It also exercises empty, unsorted and duplicate input, single-row appends, configured memory sizes, and clearing the real FAISS index. The script extracts the original classes and methods to avoid importing provider SDKs, and substitutes a model stub and a fake text encoder.
+
+### Limits
+
+A pass establishes the price-input and reset behavior exercised above. It does not validate provider integration, trading returns, or the authenticity and publication timing of historical news.
+
 ## Results
 
-The system's performance is evaluated through comprehensive backtesting and analysis. Below are the key results from the evaluation:
+The charts below are historical example outputs from before the memory-lifecycle repair. They have not been rerun with the repaired code; the offline check above measures input correctness, not returns.
 
 ### Decision Distribution
 
@@ -62,7 +91,7 @@ For detailed performance metrics, see the generated `documentation/results/summa
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/LayeredMemoryTrader.git
+    git clone https://github.com/gael55x/LayeredMemoryTrader.git
     cd LayeredMemoryTrader
     ```
 2.  Install the dependencies:

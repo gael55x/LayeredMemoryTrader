@@ -9,6 +9,11 @@ class SemanticMemory:
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
         self.entries = []
 
+    def reset(self):
+        """Clears stored entries in place, keeping the loaded model and shared references."""
+        self.index.reset()
+        self.entries.clear()
+
     def add_memory(self, text: str):
         embedding = self.model.encode([text])
         if embedding.shape[1] != self.dimension:
