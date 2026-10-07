@@ -56,7 +56,7 @@ It also exercises empty, unsorted and duplicate input, single-row appends, confi
 
 A pass establishes the price-input and reset behavior exercised above. It does not validate provider integration, trading returns, or the authenticity and publication timing of historical news.
 
-The full backtest still uses `gemini-1.5-flash`, which [Google shut down on September 29, 2025](https://ai.google.dev/gemini-api/docs/changelog#september-29-2025). Its provider error handler returns HOLD, so a completed run is not evidence of successful model calls. The offline check works without that provider; running the model-backed trader requires a separate provider update.
+Live Gemini account access and model behavior have not been verified by these offline checks.
 
 ## Results
 
@@ -84,9 +84,21 @@ For detailed performance metrics, see the generated `documentation/results/summa
 
 ## Getting Started
 
+### Gemini provider
+
+The agents use `google-genai==2.28.0`, installed by `pip install -r requirements.txt`. The model and per-request timeout are set in `config.yaml` under `llm` (default `gemini-3.5-flash-lite`, `timeout_ms: 30000`). Each request has one attempt; failures are not retried. Set `GEMINI_API_KEY` before running `trader.py` or `evaluate.py`; if it is missing, the run stops before loading data and the embedding model.
+
+Each model reply must be exactly `VOTE: BUY|SELL|HOLD, CONFIDENCE: <0.0-1.0>` (case-insensitive; surrounding whitespace allowed). Any of the following stops the backtest with an error instead of being counted as a HOLD vote: auth failures, provider errors, timeouts, blocked replies, truncated replies, empty replies, malformed replies, and out-of-range confidence. Passing this response-format check does not establish that a trading recommendation is correct. Agents without enough history (for example, the mid-term agent before 20 rows) still vote HOLD 0.5 without calling the API.
+
+Checks:
+
+- `python tests/check_gemini_votes.py`: offline; real SDK with a mocked HTTP transport.
+- `python tests/check_memory_replay.py`: offline memory/replay check; agent model calls are stubbed.
+- `python tests/check_gemini_votes.py --live`: opt-in, one billed request.
+
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.10+
 - The required packages listed in `requirements.txt`
 
 ### Installation

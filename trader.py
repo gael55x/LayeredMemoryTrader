@@ -6,6 +6,7 @@ from memory.semantic_memory import SemanticMemory
 from agents.short_agent import ShortTermAgent
 from agents.mid_agent import MidTermAgent
 from agents.long_agent import LongTermAgent
+from agents.base_agent import gemini_api_key
 from agents.debate import Debate
 
 def calculate_rsi(data, window=14):
@@ -34,15 +35,17 @@ class Trader:
     def __init__(self, config_path='config.yaml', backtest_mode='train'):
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
+        # Fail on a missing key before loading data and the sentence-transformer encoder
+        gemini_api_key()
 
         self.data_manager = DataManager(self.config, backtest_mode=backtest_mode)
         self.memory_manager = MemoryManager(self.config['memory_horizons'])
         self.semantic_memory = SemanticMemory()
 
         # Initialize agents with semantic memory
-        self.short_term_agent = ShortTermAgent(name="Short-Term Agent", config={}, semantic_memory=self.semantic_memory)
-        self.mid_term_agent = MidTermAgent(name="Mid-Term Agent", config={}, semantic_memory=self.semantic_memory)
-        self.long_term_agent = LongTermAgent(name="Long-Term Agent", config={}, semantic_memory=self.semantic_memory)
+        self.short_term_agent = ShortTermAgent(name="Short-Term Agent", config=self.config['llm'], semantic_memory=self.semantic_memory)
+        self.mid_term_agent = MidTermAgent(name="Mid-Term Agent", config=self.config['llm'], semantic_memory=self.semantic_memory)
+        self.long_term_agent = LongTermAgent(name="Long-Term Agent", config=self.config['llm'], semantic_memory=self.semantic_memory)
         
         self.agents = [self.short_term_agent, self.mid_term_agent, self.long_term_agent]
         self.debate = Debate(self.agents)

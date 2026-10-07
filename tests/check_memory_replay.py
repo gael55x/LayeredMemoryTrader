@@ -1,7 +1,7 @@
 """Exercise the patched original replay method offline, including real FAISS reset.
 
 python tests/check_memory_replay.py
-Provider constructors are excluded; no model, broker or network calls.
+Agent ask_llm is stubbed (provider boundary: tests/check_gemini_votes.py); no model, broker or network calls.
 The evaluator runs on stub HOLD decisions only; no trading-return validation.
 """
 import ast
@@ -37,12 +37,12 @@ for agent in ("short", "mid", "long"):
 
 def capture(agent, snapshot):
     prompts = []
-    def generate(prompt):
+    def ask_llm(prompt):
         prompts.append(prompt)
-        return SimpleNamespace(text="VOTE: HOLD, CONFIDENCE: 0.5")
-    stub = SimpleNamespace(model=SimpleNamespace(generate_content=generate),
+        return "HOLD", 0.5
+    stub = SimpleNamespace(ask_llm=ask_llm,
                            semantic_memory=SimpleNamespace(search_memory=lambda *a, **k: []))
-    votes[agent](stub, snapshot)
+    assert votes[agent](stub, snapshot) == ("HOLD", 0.5)
     assert len(prompts) <= 1
     return prompts
 

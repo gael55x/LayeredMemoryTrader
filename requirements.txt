@@ -6,6 +6,6 @@ requests
 scikit-learn
 yfinance
 python-dotenv
-google-generativeai
+google-genai==2.28.0
 matplotlib
 sentence-transformers 
