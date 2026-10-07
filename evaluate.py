@@ -11,7 +11,7 @@ def evaluate_performance(trader: Trader):
     results_dir = 'documentation/results'
     os.makedirs(results_dir, exist_ok=True)
 
-    reflections = trader.memory_manager.reflection_memory
+    reflections = trader.reflection_log
     
     if reflections.empty:
         print("No trades were made during the backtest.")

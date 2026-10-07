@@ -47,10 +47,13 @@ class Trader:
         self.agents = [self.short_term_agent, self.mid_term_agent, self.long_term_agent]
         self.debate = Debate(self.agents)
         self.portfolios = {}
+        self.reflection_log = pd.DataFrame(columns=MemoryManager.REFLECTION_COLUMNS)
 
     def run_backtest(self):
         print("Starting backtest...")
         tickers = self.data_manager.tickers
+        # Evaluation keeps the whole run; agent working memory resets per ticker.
+        self.reflection_log = pd.DataFrame(columns=MemoryManager.REFLECTION_COLUMNS)
 
         for ticker in tickers:
             print(f"\n--- Running backtest for {ticker} ---")
@@ -129,13 +132,14 @@ class Trader:
                 agent_votes_summary = ", ".join([f"{v['agent'].replace(' Agent', '')}: {v['decision']}({v['confidence']:.1f})" for v in votes])
                 reflection_text = f"[{ticker}] Decision: {final_decision}, Conf: {final_confidence:.2f}. Votes: [{agent_votes_summary}]. Value: ${portfolio_value:,.2f}"
                 
-                self.memory_manager.add_reflection(
+                reflection_row = self.memory_manager.add_reflection(
                     timestamp=current_data_slice.index[-1],
                     decision=final_decision,
                     confidence=final_confidence,
                     outcome=trade_outcome,
                     reflection=reflection_text
                 )
+                self.reflection_log = pd.concat([self.reflection_log, reflection_row], ignore_index=True)
 
                 if i % 100 == 0: # Print progress every 100 (processed) days
                     print(f"  Processed up to day {i} for {ticker}. Last decision: {final_decision}")

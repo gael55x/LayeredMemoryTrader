@@ -29,7 +29,7 @@ This project is inspired by the paper ["TradingGPT: Multi-Agent System with Laye
 
 ## Memory lifecycle in historical replays
 
-A replay runs tickers one after another. Before a ticker’s first decision, its price, reflection and semantic memory stores are cleared. These stores do not carry entries from the previous ticker.
+A replay runs tickers one after another. Before a ticker’s first decision, its price, reflection and semantic memory stores are cleared. These stores do not carry entries from the previous ticker. The evaluator uses a separate whole-run decision log, which agents cannot access. Starting another run replaces that log.
 
 Within a ticker, price history enters memory in 5-row intervals, and each interval is appended once. The replay checks its input before computing indicators:
 
@@ -48,13 +48,15 @@ python3.12 -m venv /tmp/lmt-memory-check
 /tmp/lmt-memory-check/bin/python tests/check_memory_replay.py
 ```
 
-With the supplied training data, expect 537 decision dates and 1,602 price prompts per run, zero prompt differences, and all boolean checks true. The script runs the replay twice. Every captured price prompt must match one built from the current ticker’s eligible history; any mismatch fails the check.
+With the supplied training data, expect 537 decision dates and 1,602 price prompts per run, zero prompt differences, and all boolean checks true. The script runs the replay twice and checks that both exported decision logs contain all 537 records with identical CSV contents, even when an empty ticker comes last. Every captured price prompt must match one built from the current ticker’s eligible history; any mismatch fails the check.
 
 It also exercises empty, unsorted and duplicate input, single-row appends, configured memory sizes, and clearing the real FAISS index. The script extracts the original classes and methods to avoid importing provider SDKs, and substitutes a model stub and a fake text encoder.
 
 ### Limits
 
 A pass establishes the price-input and reset behavior exercised above. It does not validate provider integration, trading returns, or the authenticity and publication timing of historical news.
+
+The full backtest still uses `gemini-1.5-flash`, which [Google shut down on September 29, 2025](https://ai.google.dev/gemini-api/docs/changelog#september-29-2025). Its provider error handler returns HOLD, so a completed run is not evidence of successful model calls. The offline check works without that provider; running the model-backed trader requires a separate provider update.
 
 ## Results
 
