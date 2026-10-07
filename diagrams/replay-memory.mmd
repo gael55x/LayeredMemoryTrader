@@ -1,0 +1,13 @@
+flowchart TD
+    A["Price CSV<br/>train/test date filter"] --> B["Ticker starts:<br/>reset price buffers,<br/>working reflections, news index"]
+    B --> C["Append the five rows<br/>since the last decision"]
+    C --> D["Price buffers<br/>append once, trim to horizon"]
+    C -- "last row's news, if present" --> N["This ticker's news index"]
+    D --> S["Snapshot: price buffers<br/>+ working reflections"]
+    S --> E["Agents vote on last<br/>10 / 20 / 10 rows"]
+    N -- "searched by long-term agent" --> E
+    E --> F["Debate and paper decision"]
+    F --> G["Working reflections<br/>this ticker only"]
+    F --> H["Whole-run decision log<br/>kept across tickers,<br/>replaced at a new run"]
+    G -. "in next snapshot,<br/>not read by current votes" .-> S
+    H --> I["Trade-log CSV"]

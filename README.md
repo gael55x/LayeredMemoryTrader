@@ -31,10 +31,14 @@ This project is inspired by the paper ["TradingGPT: Multi-Agent System with Laye
 
 A replay runs tickers one after another. Before a ticker’s first decision, its price, reflection and semantic memory stores are cleared. These stores do not carry entries from the previous ticker. The evaluator uses a separate whole-run decision log, which agents cannot access. Starting another run replaces that log.
 
+![Per-ticker working memory and a separate whole-run decision log](diagrams/replay-memory.png)
+
 Within a ticker, price history enters memory in 5-row intervals, and each interval is appended once. The replay checks its input before computing indicators:
 
 - It rejects input whose dates are unsorted or duplicated.
 - It skips a ticker with empty data before any indicators are computed.
+
+The [evaluation notes](evaluation/README.md) include the original reproduction, raw per-agent results and comparison method.
 
 Earlier versions appended the full cumulative prefix on every update and kept stores alive across tickers. As a result, a prompt could include rows from a different ticker or from after the decision date. For example, a GOOG prompt for 2020-08-07 contained five AAPL rows from February 2024.
 

@@ -1,0 +1,84 @@
+{
+  "source_commit": "82ffbc6fc3306644ba40e871fdadf0b74d379e32",
+  "source_hashes": {
+    "memory/memory_manager.py": "e23e1911e82260e09239414c9e4dcf01333f3fa3b5c685c0c30c3697dbe1f16d",
+    "trader.py": "b4f8a733ed56c51d3092f443b41c773ce5fab7ad495fd77e5e4ba130b6df1a27",
+    "agents/short_agent.py": "915bc7a910dd7a5c1b7f38f26e8642a32198acf2255e73cacaaa4da7145ef544",
+    "agents/mid_agent.py": "875b8261a7416664ff14845e08640d7b90327895f3f948986b464681a5ac2ec2",
+    "agents/long_agent.py": "555acece3ebb1578d701e2e96692f25a7fb81df9a867a443f7a969527239fdef",
+    "config.yaml": "39927ef92d2de5ad1b7848074fad3fe41f8cbd89c5a2a7eef83898995872f22b",
+    "historical_data_with_news.csv": "897ab076ce7783d49ab9f916f441c861bced7856b61a7b5843221efe74dcc014"
+  },
+  "pandas_version": "2.3.1",
+  "decision_dates": 537,
+  "agent_opportunities": 1611,
+  "original_prompts": 1609,
+  "control_prompts": 1602,
+  "different_prompt_or_call": 14,
+  "prompts_with_future_rows": 8,
+  "per_agent": {
+    "short": {
+      "changed": 2,
+      "extra_early_calls": 0
+    },
+    "mid": {
+      "changed": 10,
+      "extra_early_calls": 7
+    },
+    "long": {
+      "changed": 2,
+      "extra_early_calls": 0
+    }
+  },
+  "examples": {
+    "mid": {
+      "case": {
+        "ticker": "AAPL",
+        "i": 15,
+        "cutoff": "2020-08-21",
+        "agent": "mid",
+        "original_called": true,
+        "control_called": false,
+        "prompt_matches_control": false,
+        "foreign_rows": 0,
+        "future_rows": 0,
+        "duplicate_rows": 5
+      },
+      "original_prompt": "You are a mid-term trend analyst specializing in AAPL. Based on the following price data and technical indicators, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\nMid-Term Price & Indicator Data for AAPL (last 20 data points):\n                 close        rsi      macd  upper_band  lower_band\ntime                                                               \n2020-08-10  109.776512        NaN  0.731878         NaN         NaN\n2020-08-11  106.511757        NaN  0.600278         NaN         NaN\n2020-08-12  110.051590        NaN  0.772712         NaN         NaN\n2020-08-13  111.999245        NaN  1.054372         NaN         NaN\n2020-08-14  111.899437        NaN  1.255069         NaN         NaN\n2020-08-03  105.894753        NaN  0.000000         NaN         NaN\n2020-08-04  106.601959        NaN  0.056415         NaN         NaN\n2020-08-05  106.988350        NaN  0.130796         NaN         NaN\n2020-08-06  110.721107        NaN  0.485350         NaN         NaN\n2020-08-07  108.203766        NaN  0.556790         NaN         NaN\n2020-08-10  109.776512        NaN  0.731878         NaN         NaN\n2020-08-11  106.511757        NaN  0.600278         NaN         NaN\n2020-08-12  110.051590        NaN  0.772712         NaN         NaN\n2020-08-13  111.999245        NaN  1.054372         NaN         NaN\n2020-08-14  111.899437        NaN  1.255069         NaN         NaN\n2020-08-17  111.607262        NaN  1.374700         NaN         NaN\n2020-08-18  112.537277        NaN  1.526951         NaN         NaN\n2020-08-19  112.678482        NaN  1.640099         NaN         NaN\n2020-08-20  115.178764  71.458807  1.909509         NaN         NaN\n2020-08-21  121.114197  77.603857  2.572307         NaN         NaN\n\n5-day Moving Average:\ntime\n2020-08-17    110.413858\n2020-08-18    111.618962\n2020-08-19    112.144341\n2020-08-20    112.780244\n2020-08-21    114.623196\n\n20-day Moving Average:\ntime\n2020-08-17    109.150473\n2020-08-18    109.447239\n2020-08-19    109.731746\n2020-08-20    109.954628\n2020-08-21    110.600150\n",
+      "control_prompt": null
+    },
+    "short": {
+      "case": {
+        "ticker": "GOOG",
+        "i": 5,
+        "cutoff": "2020-08-07",
+        "agent": "short",
+        "original_called": true,
+        "control_called": true,
+        "prompt_matches_control": false,
+        "foreign_rows": 5,
+        "future_rows": 5,
+        "duplicate_rows": 0
+      },
+      "original_prompt": "You are a short-term momentum trader specializing in GOOG. Based on the recent price action and technical indicators, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\nShort-Term Price & Indicator Data for GOOG (last 10 data points):\n                 close        rsi      macd  upper_band  lower_band\ntime                                                               \n2024-02-15  182.756271  30.998686 -1.014001  194.932156  180.671801\n2024-02-16  181.215561  29.825168 -1.288948  194.966931  179.741845\n2024-02-20  180.470062  34.245553 -1.549144  194.556314  178.951422\n2024-02-21  181.225525  44.551048 -1.675082  193.564919  178.689263\n2024-02-22  183.263184  43.185452 -1.592114  192.406273  178.865627\n2020-08-03   73.286873        NaN  0.000000         NaN         NaN\n2020-08-04   72.815674        NaN -0.037589         NaN         NaN\n2020-08-05   73.245117        NaN -0.032352         NaN         NaN\n2020-08-06   74.561783        NaN  0.077152         NaN         NaN\n2020-08-07   74.282944        NaN  0.139823         NaN         NaN\n",
+      "control_prompt": "You are a short-term momentum trader specializing in GOOG. Based on the recent price action and technical indicators, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\nShort-Term Price & Indicator Data for GOOG (last 10 data points):\n                close  rsi      macd  upper_band  lower_band\ntime                                                        \n2020-08-03  73.286873  NaN  0.000000         NaN         NaN\n2020-08-04  72.815674  NaN -0.037589         NaN         NaN\n2020-08-05  73.245117  NaN -0.032352         NaN         NaN\n2020-08-06  74.561783  NaN  0.077152         NaN         NaN\n2020-08-07  74.282944  NaN  0.139823         NaN         NaN\n"
+    },
+    "long": {
+      "case": {
+        "ticker": "GOOG",
+        "i": 5,
+        "cutoff": "2020-08-07",
+        "agent": "long",
+        "original_called": true,
+        "control_called": true,
+        "prompt_matches_control": false,
+        "foreign_rows": 5,
+        "future_rows": 5,
+        "duplicate_rows": 0
+      },
+      "original_prompt": "You are a long-term trading analyst specializing in GOOG. Based on the following data, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\nLong-Term Price & Indicator Data for GOOG (last 10 data points):\n                 close        rsi      macd  upper_band  lower_band\ntime                                                               \n2024-02-15  182.756271  30.998686 -1.014001  194.932156  180.671801\n2024-02-16  181.215561  29.825168 -1.288948  194.966931  179.741845\n2024-02-20  180.470062  34.245553 -1.549144  194.556314  178.951422\n2024-02-21  181.225525  44.551048 -1.675082  193.564919  178.689263\n2024-02-22  183.263184  43.185452 -1.592114  192.406273  178.865627\n2020-08-03   73.286873        NaN  0.000000         NaN         NaN\n2020-08-04   72.815674        NaN -0.037589         NaN         NaN\n2020-08-05   73.245117        NaN -0.032352         NaN         NaN\n2020-08-06   74.561783        NaN  0.077152         NaN         NaN\n2020-08-07   74.282944        NaN  0.139823         NaN         NaN\n\n",
+      "control_prompt": "You are a long-term trading analyst specializing in GOOG. Based on the following data, what is your recommendation? Provide your answer as 'VOTE: [BUY/SELL/HOLD], CONFIDENCE: [0.0-1.0]'.\n\nLong-Term Price & Indicator Data for GOOG (last 10 data points):\n                close  rsi      macd  upper_band  lower_band\ntime                                                        \n2020-08-03  73.286873  NaN  0.000000         NaN         NaN\n2020-08-04  72.815674  NaN -0.037589         NaN         NaN\n2020-08-05  73.245117  NaN -0.032352         NaN         NaN\n2020-08-06  74.561783  NaN  0.077152         NaN         NaN\n2020-08-07  74.282944  NaN  0.139823         NaN         NaN\n\n"
+    }
+  },
+  "scope": "Original indicator functions, memory class and vote methods with capture-only model and empty semantic results. Full price prompt strings compared; semantic retrieval, model responses, fills and returns unmeasured. Control is an eligible-prefix oracle, not a production repair."
+}
