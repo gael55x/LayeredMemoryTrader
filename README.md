@@ -94,7 +94,10 @@ Checks:
 
 - `python tests/check_gemini_votes.py`: offline; real SDK with a mocked HTTP transport.
 - `python tests/check_memory_replay.py`: offline memory/replay check; agent model calls are stubbed.
+- `python tests/check_full_replay.py`: real CSV loader, embedding model, FAISS, agents and evaluator; only Gemini HTTP responses are constructed. The first run downloads the public embedding model. Expect 75 price rows, 12 decisions, 27 constructed requests and 12 exported CSV rows. Generated outputs stay in a temporary directory.
 - `python tests/check_gemini_votes.py --live`: opt-in, one billed request.
+
+The full-model check passed in a normal macOS Python 3.12 process. It exited with code 139 in the restricted runtime used during validation; that limitation is unresolved.
 
 ### Prerequisites
 
@@ -194,3 +197,10 @@ The system can work with or without real news data. For enhanced decision-making
 - **"API key not found"**: Check your `.env` file exists and API key names are correct
 - **"No news found"**: Verify API keys are valid and ticker symbols are correct
 - **Rate limiting errors**: Wait a few minutes before retrying or reduce the number of tickers
+
+
+## License
+
+The project's source code and documentation are available under the [MIT License](LICENSE). This grant excludes the bundled market-data CSV files and historical outputs under `documentation/results/`; their redistribution rights have not been established here. Use data you are entitled to use.
+
+Dependencies and downloaded model weights retain their own licenses. The [all-MiniLM-L6-v2 model card](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) identifies the embedding model as Apache-2.0. Its weights are downloaded separately and are not included in this repository.
